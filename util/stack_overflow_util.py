@@ -9,18 +9,22 @@ def fetch_questions(page, pagesize):
         "pagesize": pagesize,  # Number of questions per page
         "answers": 1,
         "filter": "!*MQIL7pRpsdq5H)nUUCB(_njhjqb",
+        "key": "gJE1zbvB18v8sS7Opl43lg((",
         "page": page
     }
 
     count = 4
     response_code = 502
-    timeouts = [10, 3, 1, 0]
+    timeouts = [60, 120, 60, 10]
     while count > 0:
-        time.sleep(timeouts[count-1])
         response = requests.get(url, params=params)
         response_code = response.status_code
-        if response_code != 502:
+        retry_condition = response_code == 400 and response.json()['error_id'] == 502
+        time.sleep(timeouts[count-1])
+
+        if not retry_condition:
             break
+        print(f"Retrying page {page} count {count}")
         count -= 1
 
     if not response.ok:
