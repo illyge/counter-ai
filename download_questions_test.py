@@ -20,16 +20,17 @@ class TestDownloadQuestions(unittest.TestCase):
 
     def test_happy_path(self, mock_time, jsonl_mock_open, mock_fetch_questions):
         # Given
-        mock_fetch_questions.side_effects = [
+        fetch_return_values = [
             self.mock_questions[:3],
             self.mock_questions[3:]
         ]
-        n_pages = len(mock_fetch_questions.side_effects)
+        mock_fetch_questions.side_effect = fetch_return_values
+        n_pages = len(fetch_return_values)
         mock_time.return_value = 3452346.3245346
         jsonl_mock_open.return_value.__enter__.return_value = self.file_mock
 
         # When
-        download_questions(n_pages)
+        download_questions(range(1, n_pages+1))
 
         # Then
         self.assertEqual(1, jsonl_mock_open.call_count, msg="Open file should be called once")
@@ -40,7 +41,9 @@ class TestDownloadQuestions(unittest.TestCase):
                          msg="File should be open for writing")
 
         self.assertEqual(2, self.file_mock.write_all.call_count, msg="There should be a file write for each page")
-        self.assertEqual(2, len(self.file_mock.write_all.call_args[0]))
+        self.assertEqual(3, len(self.file_mock.write_all.call_args_list[0].args[0]))
+        self.assertEqual(2, len(self.file_mock.write_all.call_args_list[1].args[0]))
+
 
 
 class PG(unittest.TestCase):
