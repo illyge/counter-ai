@@ -9,9 +9,9 @@ def fetch_questions(page, pagesize):
         "site": "stackoverflow",
         "sort": "votes",
         "pagesize": pagesize,  # Number of questions per page
-        "answers": 1,
+        "answers_human": 1,
         "filter": "!*MQIL7pRpsdq5H)nUUCB(_njhjqb",
-        "key": "gJE1zbvB18v8sS7Opl43lg((",
+        "key": "",
         "page": page
     }
 
@@ -40,7 +40,7 @@ def fetch_answer(answer_id):
     params = {
         "site": "stackoverflow",
         "filter": "!*sVmCjZbt5MPsJxAfYAZLOjFCfva",
-        "key": "gJE1zbvB18v8sS7Opl43lg(("
+        "key": ""
     }
 
     for timeout in answers_timeouts():

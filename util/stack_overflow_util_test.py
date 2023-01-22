@@ -134,7 +134,7 @@ class TestFetchAnswer(unittest.TestCase):
 
         # Then
         self.assertEqual(mock_requests.get.call_count, 1, msg="Should request GET once")
-        self.assertEqual(mock_requests.get.call_args[0][0], f"https://api.stackexchange.com/2.2/answers/{answer_id}", msg="URL should address the answers endpoint")
+        self.assertEqual(mock_requests.get.call_args[0][0], f"https://api.stackexchange.com/2.2/answers/{answer_id}", msg="URL should address the answers_human endpoint")
 
         params = mock_requests.get.call_args[1]["params"]
         self.assertEqual(params["site"], "stackoverflow", msg="Site param should be overflow")
