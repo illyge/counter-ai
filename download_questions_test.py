@@ -1,7 +1,6 @@
 import unittest
 
 from download_questions import download_questions
-from unittest import mock
 from unittest.mock import Mock, patch
 
 
