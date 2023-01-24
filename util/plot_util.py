@@ -3,6 +3,7 @@ import matplotlib.ticker as mticker
 import numpy as np
 from matplotlib.pyplot import cm
 
+
 def plot_grid_results(results, x_var, legend_var=None, log=False):
     """
     Plot the results of a grid search as a function of one of the parameters.
@@ -35,3 +36,24 @@ def plot_grid_results(results, x_var, legend_var=None, log=False):
     plt.ylabel(results.scoring)
     if legend_var is not None:
         plt.legend()
+
+
+def comparation_hist(df, column, value_name, bins=30):
+    """
+    This function plots a histogram of the given column in the dataframe, separated by the 'target' column.
+    It compares the distribution of the column's values between the 'Human' and 'AI' group.
+    The function takes in three arguments:
+    column: (str) The name of the column in the labeled_data dataframe that the histogram is based on
+    value_name: (str) The name of the column or feature that should be used as the x-axis label in the plot
+    bins: (int) The number of bins in the histogram. Default is 30
+    """
+
+    plt.hist(df[df.target == 0][column], alpha=0.5, label='Human', bins=bins)
+    plt.hist(df[df.target == 1][column], alpha=0.5, label='AI', bins=bins)
+
+    # plt.title('Histograms for col1 and col2')
+    plt.xlabel(value_name)
+    plt.ylabel('Frequency')
+    plt.legend()
+
+    plt.show()

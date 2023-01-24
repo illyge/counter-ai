@@ -73,12 +73,24 @@ def add_creativity(df):
 
 
 def add_vocabulary(df):
+    """
+    This function adds two new columns to the input dataframe 'df': 'n_unique_words' and 'vocabulary_size'.
+    'n_unique_words' is the number of unique words in the 'tokenized_answer' column of the dataframe.
+    'vocabulary_size' is the ratio of unique words to total words in the 'tokenized_answer' column of the dataframe.
+    """
     df['n_unique_words'] = df.tokenized_answer.apply(lambda x: len(set(x)))
     df['vocabulary_size'] = df.apply(
         lambda x: x.n_unique_words / len(x.tokenized_answer) if len(x.tokenized_answer) > 0 else 0, axis=1)
 
 
 def add_stealing(df):
+    """
+    This function adds three new columns to the input dataframe 'df': 'stealing_strength', 'stealing_frequency' and 'stolen_ngrams'.
+    'stolen_ngrams' is the set of n-grams that occur in both the 'tokenized_question' and 'tokenized_answer' columns of the dataframe.
+    'stealing_strength' is the maximum length of the stolen n-grams.
+    'stealing_frequency' is the ratio of stolen n-grams to unique words in the 'tokenized_answer' column.
+    """
+
     def find_stolen_ngrams(record):
         ngrams_question = everygrams(record.tokenized_question, min_len=2)
         ngrams_answer = everygrams(record.tokenized_answer, min_len=2)
@@ -95,10 +107,44 @@ def add_stealing(df):
 
 
 def add_answer_length(df):
+    """
+    This function adds a new column 'answer_length' to the input dataframe 'df'.
+    'answer_length' is the logarithm of the length of the 'answer' column in the dataframe + 1.
+    """
     df['answer_length'] = np.log1p(df.answer.str.len())
 
+
 def add_sentence_length(df):
+    """
+    This function adds three new columns to the input dataframe 'df': 'sentences', 'sentence_length_mean', and 'sentence_length_std'.
+    'sentences' is a list of sentences in the 'answer' column of the dataframe.
+    'sentence_length_mean' is the logarithm of the mean length of the sentences in the 'answer' column + 1.
+    'sentence_length_std' is the logarithm of the standard deviation of the sentence lengths in the 'answer' column + 1.
+    """
     df['sentences'] = df.answer.apply(sent_tokenize)
     df['sentence_length_mean'] = np.log1p(
         df['sentences'].apply(lambda x: np.mean([len(s) for s in x])))
     df['sentence_length_std'] = np.log1p(df.sentences.apply(lambda x: np.std([len(s) for s in x])))
+
+
+def prepare_data(df):
+    """
+    This function takes in a dataframe 'df' and processes it to prepare it for further analysis.
+    The function makes a copy of the input dataframe, performs several cleaning and processing steps,
+    and returns the processed dataframe.
+    """
+    data = df.copy()
+
+    strip_whites(data)
+    remove_duplicates(data)
+    label(data)
+    tokenize(data)
+    add_creativity(data)
+    add_vocabulary(data)
+    add_stealing(data)
+    add_answer_length(data)
+    add_sentence_length(data)
+
+    data.fillna(0, inplace=True)
+
+    return data
