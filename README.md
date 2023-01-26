@@ -98,8 +98,9 @@ Main steps:
 #### Results
 
 ![features_input.png](features_input.png)
-
-* Despite the results of correlation matrix and histograms, the following features were selected after trying cross-validation score:
+* The main increase in score comes from `answer_length` and `creativity`
+* Despite the results of correlation matrix and histograms, `sentence_length_std` and `sentence_length_std` didn't show any use
+* The following features were selected after trying cross-validation score:
   * `creativity`
   * `vocabulary_size` 
   * `stealing_strength`
@@ -135,5 +136,38 @@ Main steps:
 * The F1 score on the test data was:
   * 0.904
 
+## Deployment
+
+The API implementing the trained model is built and dockerized using BentoML Framework.
+
+## How to run the project
+
+- install requirements:
+  - ```pip3 install -r requirements.txt```
+- run notebook: 
+  - `jupyter-lab`
+- run tests locally:
+  - `pytest`
+- train and save model: 
+  - `python train.py`
+- run service locally:
+  - `bentoml serve service.py:svc`
+
+## How to prepare model for deployment:
+- Build model:
+  - `bentoml build`
+    - you'll see the output: `Successfully built Bento(tag="counter_ai_classifier:[bentoml_tag]")`
+  - `bentoml containerize counter_ai_classifier:[bentoml_tag] --platform=linux/amd64`
+  - Now you can find the model in your local docker:
+    - `docker images`
+- The image can now be pushed to ECR to be deployed as ECS service later, e.g.:
+  - `docker tag [image id] [ecr url]`
+  - `docker push [ecr url]`
+
+## Production API
+API deployed to AWS as a Fargate service and is accessible here:
+http://counter-ai.illyge.com/
+
+## Credits
 This is my capstone project for the machine learning bootcamp:
 https://github.com/alexeygrigorev/mlbookcamp-code/tree/master/course-zoomcamp
