@@ -135,6 +135,7 @@ Main steps:
 #### Results
 * The F1 score on the test data was:
   * 0.904
+* It's a good improvement over both approaches, so this 2-layered pipeline will go into production
 
 ## Deployment
 
