@@ -171,7 +171,7 @@ http://api.counter-ai.illyge.com/
 
 ## Production Application
 I've also deployed a very simple UI to more easily play with the API:
-http://ui.counter-ui.illyge.com/
+http://counter-ai.illyge.com/
 
 For the souce code please refer to [ui](ui) folder
 
