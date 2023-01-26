@@ -1,0 +1,14 @@
+service: "service.py:svc"
+labels:
+  project: "counter-ai-service"
+include:
+  - "service.py"
+  - "util/preprocess_util.py"
+  - "util/train_util.py"
+python:
+  packages:
+    - pandas
+    - scikit-learn==1.2.0
+    - pydantic
+    - scipy
+    - nltk
