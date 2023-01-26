@@ -10,14 +10,12 @@ stemmer = SnowballStemmer(language='english')
 
 def strip_whites(df):
     """
-    Removes leading and trailing whitespaces from 'human_answer' and 'ai_answer' columns of the given DataFrame.
+    Removes leading and trailing whitespaces from the 'answer' column of the given DataFrame.
 
     :param df: DataFrame to process
     :type df: pd.DataFrame
     """
-    df.human_answer = df.human_answer.str.strip()
-    df.ai_answer = df.ai_answer.str.strip()
-
+    df.answer = df.answer.str.strip()
 
 def remove_duplicates(df):
     """
@@ -127,7 +125,7 @@ def add_sentence_length(df):
     df['sentence_length_std'] = np.log1p(df.sentences.apply(lambda x: np.std([len(s) for s in x])))
 
 
-def prepare_data(df):
+def prepare_data(df, train=True):
     """
     This function takes in a dataframe 'df' and processes it to prepare it for further analysis.
     The function makes a copy of the input dataframe, performs several cleaning and processing steps,
@@ -135,9 +133,11 @@ def prepare_data(df):
     """
     data = df.copy()
 
+    if train:
+        remove_duplicates(data)
+        label(data)
+
     strip_whites(data)
-    remove_duplicates(data)
-    label(data)
     tokenize(data)
     add_creativity(data)
     add_vocabulary(data)

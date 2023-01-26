@@ -1,41 +1,39 @@
 import bentoml
 import pandas as pd
-from sklearn.naive_bayes import ComplementNB
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics import f1_score
+from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
-from util.preprocess_util import strip_whites, remove_duplicates, label, tokenize, add_sentence_length, add_answer_length, add_creativity, add_vocabulary, add_stealing
-
-def prepare_data(df):
-    data = df.copy()
-
-    strip_whites(data)
-    remove_duplicates(data)
-    label(data)
-    tokenize(data)
-    add_creativity(data)
-    add_vocabulary(data)
-    add_stealing(data)
-    add_answer_length(data)
-    add_sentence_length(data)
-
-    data.fillna(0, inplace=True)
-
-    return data
+from util.train_util import create_pipeline
+from util.preprocess_util import prepare_data
 
 def pipeline():
-    pipeline = make_preparation_pipeline(kw=True)
-    steps = pipeline.steps
-    steps.append(('classifier', ComplementNB()))
-    return Pipeline(steps)
+    pipe = create_pipeline()
+    pipe.set_params(**{
+        'nb_col_trans__nb_pipe__c_vect__min_df': 6,
+        'nb_col_trans__nb_pipe__c_vect__ngram_range': (1, 3),
+        'lr__C': 10.0, 'lr__solver': 'lbfgs'})
+    return pipe
+
 
 def train():
-    data = pd.read_json("data/data.jsonl", lines=True)
-    train_data = prepare_data(data)
+    data = pd.read_json("data/preprocessed.jsonl", lines=True)
+
+    df_full_train, df_test = train_test_split(data, test_size=0.2, random_state=30)
+    selected_features = ['answer_length', 'creativity', 'stealing_strength', 'sentence_length_mean', 'vocabulary_size']
+
+    X_train = df_full_train[['stemmed_answer'] + selected_features]
+    y_train = df_full_train.target
+    X_test = df_test[['stemmed_answer'] + selected_features]
+    y_test = df_test.target
 
     classifier = pipeline()
-    classifier.fit(train_data, train_data.target)
+    classifier.fit(X_train, y_train)
+
+    print(f"Score: {f1_score(classifier.predict(X_test), y_test)}")
 
     print(bentoml.sklearn.save_model(
-        'twitter-disasters-model',
+        'counter-ai-model',
         classifier
     ))
 

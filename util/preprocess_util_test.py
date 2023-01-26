@@ -12,44 +12,38 @@ class TestStripWhites(unittest.TestCase):
     def test_strip_whites(self):
         # Given
         df = pd.DataFrame({
-            'human_answer': ['  hello  ', '\nworld  '],
-            'ai_answer': ['  how  ', '  are      '],
+            'answer': ['  hello  ', '\nworld  ', '  how  ', '  are      ']
         })
 
         # When
         strip_whites(df)
 
         # Then
-        self.assertEqual(df.human_answer.tolist(), ['hello', 'world'])
-        self.assertEqual(df.ai_answer.tolist(), ['how', 'are'])
+        self.assertEqual(df.answer.tolist(), ['hello', 'world', 'how', 'are'])
 
     def test_strip_whites_with_empty_string(self):
         # Given
         df = pd.DataFrame({
-            'human_answer': [' ', '  '],
-            'ai_answer': ['   ', '    '],
+            'answer': [' ', '  ', '   ', '    ']
         })
 
         # When
         strip_whites(df)
 
         # Then
-        self.assertEqual(df.human_answer.tolist(), ['', ''])
-        self.assertEqual(df.ai_answer.tolist(), ['', ''])
+        self.assertEqual(df.answer.tolist(), ['', '', '', ''])
 
     def test_strip_whites_with_null_values(self):
         # Given
         df = pd.DataFrame({
-            'human_answer': ['  hello  ', '  world  ', None],
-            'ai_answer': ['  how  ', '  are  ', None],
+            'answer': ['  hello  ', '  world  ', None]
         })
 
         # When
         strip_whites(df)
 
         # Then
-        self.assertEqual(df.human_answer.tolist(), ['hello', 'world', None])
-        self.assertEqual(df.ai_answer.tolist(), ['how', 'are', None])
+        self.assertEqual(df.answer.tolist(), ['hello', 'world', None])
 
 
 class TestRemoveDuplicates(unittest.TestCase):
@@ -244,6 +238,7 @@ class TestAddStealing(unittest.TestCase):
         np.testing.assert_almost_equal([0.0, 0.33, 0.75, 0], df.stealing_frequency.tolist(), 2)
         self.assertNotIn('stolen_ngrams', df.columns)
 
+
 class TestAddAnswerLength(unittest.TestCase):
     @patch('util.preprocess_util.np.log1p')
     def test_add_answer_length(self, mock_log1p):
@@ -258,6 +253,7 @@ class TestAddAnswerLength(unittest.TestCase):
         self.assertEqual([14, 20, 0], df.answer_length.tolist())
         # np.testing.assert_almost_equal([14, 20, 0], df.answer_length.tolist(), 2)
         self.assertIn('answer_length', df.columns)
+
 
 class TestAddSentenceLength(unittest.TestCase):
     @patch('util.preprocess_util.np.log1p')
@@ -280,7 +276,8 @@ class TestAddSentenceLength(unittest.TestCase):
         self.assertIn('sentences', labeled_data.columns)
         self.assertIn('sentence_length_mean', labeled_data.columns)
         self.assertIn('sentence_length_std', labeled_data.columns)
-        
+
+
 class TestPrepareData(unittest.TestCase):
     @patch('util.preprocess_util.add_sentence_length')
     @patch('util.preprocess_util.add_answer_length')
@@ -292,7 +289,8 @@ class TestPrepareData(unittest.TestCase):
     @patch('util.preprocess_util.remove_duplicates')
     @patch('util.preprocess_util.strip_whites')
     def test_prepare_data(self, mock_strip_whites, mock_remove_duplicates, mock_label, mock_tokenize,
-                          mock_add_creativity, mock_add_vocabulary, mock_add_stealing, mock_add_answer_length, mock_add_sentence_length):
+                          mock_add_creativity, mock_add_vocabulary, mock_add_stealing, mock_add_answer_length,
+                          mock_add_sentence_length):
         # Given
 
         df = Mock()
@@ -300,28 +298,82 @@ class TestPrepareData(unittest.TestCase):
 
         called_mocks = []
 
-        mock_strip_whites.side_effect = called_mocks.append(mock_strip_whites)
-        mock_remove_duplicates.side_effect = called_mocks.append(mock_remove_duplicates)
-        mock_label.side_effect = called_mocks.append(mock_label)
-        mock_tokenize.side_effect = called_mocks.append(mock_tokenize)
+        mock_strip_whites.side_effect = lambda x: called_mocks.append(mock_strip_whites)
+        mock_remove_duplicates.side_effect = lambda x: called_mocks.append(mock_remove_duplicates)
+        mock_label.side_effect = lambda x: called_mocks.append(mock_label)
+        mock_tokenize.side_effect = lambda x: called_mocks.append(mock_tokenize)
 
-        mock_add_creativity.side_effect = called_mocks.append(mock_add_creativity)
-        mock_add_vocabulary.side_effect = called_mocks.append(mock_add_vocabulary)
-        mock_add_stealing.side_effect = called_mocks.append(mock_add_stealing)
-        mock_add_answer_length.side_effect = called_mocks.append(mock_add_answer_length)
-        mock_add_sentence_length.side_effect = called_mocks.append(mock_add_sentence_length)
+        mock_add_creativity.side_effect = lambda x: called_mocks.append(mock_add_creativity)
+        mock_add_vocabulary.side_effect = lambda x: called_mocks.append(mock_add_vocabulary)
+        mock_add_stealing.side_effect = lambda x: called_mocks.append(mock_add_stealing)
+        mock_add_answer_length.side_effect = lambda x: called_mocks.append(mock_add_answer_length)
+        mock_add_sentence_length.side_effect = lambda x: called_mocks.append(mock_add_sentence_length)
 
         # When
         result = prepare_data(df)
 
         # Then
         # Assert that all the functions were called with the object
-        expected_mocks = [mock_strip_whites, mock_remove_duplicates, mock_label, mock_tokenize,
-                          mock_add_creativity, mock_add_vocabulary, mock_add_stealing, mock_add_answer_length, mock_add_sentence_length]
+        expected_mocks = [mock_remove_duplicates, mock_label, mock_strip_whites, mock_tokenize,
+                          mock_add_creativity, mock_add_vocabulary, mock_add_stealing, mock_add_answer_length,
+                          mock_add_sentence_length]
 
         for expected in expected_mocks:
             expected.assert_called_once_with(data)
 
+        # Assert that the function calls are in the correct order
+        self.assertEqual(expected_mocks, called_mocks)
+
+        # Assert that Nones are filled with 0s
+        data.fillna.assert_called_once_with(0, inplace=True)
+
+        # Assert that returns data
+        self.assertEqual(result, data)
+
+    @patch('util.preprocess_util.add_sentence_length')
+    @patch('util.preprocess_util.add_answer_length')
+    @patch('util.preprocess_util.add_stealing')
+    @patch('util.preprocess_util.add_vocabulary')
+    @patch('util.preprocess_util.add_creativity')
+    @patch('util.preprocess_util.tokenize')
+    @patch('util.preprocess_util.label')
+    @patch('util.preprocess_util.remove_duplicates')
+    @patch('util.preprocess_util.strip_whites')
+    def test_prepare_data_skips_first_steps_when_not_train(self, mock_strip_whites, mock_remove_duplicates, mock_label, mock_tokenize,
+                          mock_add_creativity, mock_add_vocabulary, mock_add_stealing, mock_add_answer_length,
+                          mock_add_sentence_length):
+        # Given
+
+        df = Mock()
+        data = df.copy.return_value
+
+        called_mocks = []
+
+        mock_strip_whites.side_effect = lambda x: called_mocks.append(mock_strip_whites)
+        mock_remove_duplicates.side_effect = lambda x: called_mocks.append(mock_remove_duplicates)
+        mock_label.side_effect = lambda x: called_mocks.append(mock_label)
+        mock_tokenize.side_effect = lambda x: called_mocks.append(mock_tokenize)
+
+        mock_add_creativity.side_effect = lambda x: called_mocks.append(mock_add_creativity)
+        mock_add_vocabulary.side_effect = lambda x: called_mocks.append(mock_add_vocabulary)
+        mock_add_stealing.side_effect = lambda x: called_mocks.append(mock_add_stealing)
+        mock_add_answer_length.side_effect = lambda x: called_mocks.append(mock_add_answer_length)
+        mock_add_sentence_length.side_effect = lambda x: called_mocks.append(mock_add_sentence_length)
+
+        # When
+        result = prepare_data(df, train=False)
+
+        # Then
+        # Assert that all the functions were called with the object
+        expected_mocks = [mock_strip_whites, mock_tokenize,
+                          mock_add_creativity, mock_add_vocabulary, mock_add_stealing, mock_add_answer_length,
+                          mock_add_sentence_length]
+
+        for expected in expected_mocks:
+            expected.assert_called_once_with(data)
+
+        mock_remove_duplicates.assert_not_called()
+        mock_label.assert_not_called()
         # Assert that the function calls are in the correct order
         self.assertEqual(expected_mocks, called_mocks)
 
