@@ -167,11 +167,11 @@ The API implementing the trained model is built and dockerized using BentoML Fra
 
 ## Production API
 API deployed to AWS as a Fargate service and is accessible here:
-http://api.counter-ai.illyge.com/
+https://api.counter-ai.illyge.com/
 
 ## Production Application
 I've also deployed a very simple UI to more easily play with the API:
-http://counter-ai.illyge.com/
+https://counter-ai.illyge.com/
 
 For the souce code please refer to [ui](ui) folder
 
