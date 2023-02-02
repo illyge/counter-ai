@@ -171,7 +171,7 @@ https://api.counter-ai.illyge.com/
 
 ## Production Application
 I've also deployed a very simple UI to more easily play with the API:
-https://counter-ai.illyge.com/
+https://gpt-buster.streamlit.app/
 
 For the souce code please refer to [ui](ui) folder
 
