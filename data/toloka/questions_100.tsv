@@ -1,0 +1,1419 @@
+INPUT:question_id	INPUT:question
+11227809	"Why is processing a sorted array faster than processing an unsorted array?
+
+Here is a piece of C++ code that shows some very peculiar behavior.
+For some reason, sorting the data (before the timed region) miraculously makes the primary loop almost six times faster:
+#include <algorithm>
+#include <ctime>
+#include <iostream>
+
+int main()
+{
+    // Generate data
+    const unsigned arraySize = 32768;
+    int data[arraySize];
+
+    for (unsigned c = 0; c < arraySize; ++c)
+        data[c] = std::rand() % 256;
+
+    // !!! With this, the next loop runs faster.
+    std::sort(data, data + arraySize);
+
+    // Test
+    clock_t start = clock();
+    long long sum = 0;
+    for (unsigned i = 0; i < 100000; ++i)
+    {
+        for (unsigned c = 0; c < arraySize; ++c)
+        {   // Primary loop.
+            if (data[c] >= 128)
+                sum += data[c];
+        }
+    }
+
+    double elapsedTime = static_cast<double>(clock()-start) / CLOCKS_PER_SEC;
+
+    std::cout << elapsedTime << '\n';
+    std::cout << ""sum = "" << sum << '\n';
+}
+
+
+Without std::sort(data, data + arraySize);, the code runs in 11.54 seconds.
+With the sorted data, the code runs in 1.93 seconds.
+
+(Sorting itself takes more time than this one pass over the array, so it's not actually worth doing if we needed to calculate this for an unknown array.)
+
+Initially, I thought this might be just a language or compiler anomaly, so I tried Java:
+import java.util.Arrays;
+import java.util.Random;
+
+public class Main
+{
+    public static void main(String[] args)
+    {
+        // Generate data
+        int arraySize = 32768;
+        int data[] = new int[arraySize];
+
+        Random rnd = new Random(0);
+        for (int c = 0; c < arraySize; ++c)
+            data[c] = rnd.nextInt() % 256;
+
+        // !!! With this, the next loop runs faster
+        Arrays.sort(data);
+
+        // Test
+        long start = System.nanoTime();
+        long sum = 0;
+        for (int i = 0; i < 100000; ++i)
+        {
+            for (int c = 0; c < arraySize; ++c)
+            {   // Primary loop.
+                if (data[c] >= 128)
+                    sum += data[c];
+            }
+        }
+
+        System.out.println((System.nanoTime() - start) / 1000000000.0);
+        System.out.println(""sum = "" + sum);
+    }
+}
+
+With a similar but less extreme result.
+
+My first thought was that sorting brings the data into the cache, but that's silly because the array was just generated.
+
+What is going on?
+Why is processing a sorted array faster than processing an unsorted array?
+
+The code is summing up some independent terms, so the order should not matter.
+
+Related / follow-up Q&As about the same effect with different/later compilers and options:
+
+Why is processing an unsorted array the same speed as processing a sorted array with modern x86-64 clang?
+gcc optimization flag -O3 makes code slower than -O2
+
+"
+927358	"How do I undo the most recent local commits in Git?
+
+I accidentally committed the wrong files to Git, but didn't push the commit to the server yet.
+
+How do I undo those commits from the local repository?
+
+"
+2003505	"How do I delete a Git branch locally and remotely?
+
+Failed Attempts to Delete a Remote Branch:
+$ git branch -d remotes/origin/bugfix
+error: branch 'remotes/origin/bugfix' not found.
+
+$ git branch -d origin/bugfix
+error: branch 'origin/bugfix' not found.
+
+$ git branch -rd origin/bugfix
+Deleted remote branch origin/bugfix (was 2a14ef7).
+
+$ git push
+Everything up-to-date
+
+$ git pull
+From github.com:gituser/gitproject
+
+* [new branch] bugfix -> origin/bugfix
+Already up-to-date.
+
+How do I properly delete the remotes/origin/bugfix branch both locally and remotely?
+"
+292357	"What is the difference between 'git pull' and 'git fetch'?
+
+What are the differences between git pull and git fetch?
+"
+231767	"What does the ""yield"" keyword do?
+
+What is the use of the yield keyword in Python? What does it do?
+For example, I'm trying to understand this code1:
+def _get_child_candidates(self, distance, min_dist, max_dist):
+    if self._leftchild and distance - max_dist < self._median:
+        yield self._leftchild
+    if self._rightchild and distance + max_dist >= self._median:
+        yield self._rightchild  
+
+And this is the caller:
+result, candidates = [], [self]
+while candidates:
+    node = candidates.pop()
+    distance = node._get_dist(obj)
+    if distance <= max_dist and distance >= min_dist:
+        result.extend(node._values)
+    candidates.extend(node._get_child_candidates(distance, min_dist, max_dist))
+return result
+
+What happens when the method _get_child_candidates is called?
+Is a list returned? A single element? Is it called again? When will subsequent calls stop?
+
+
+1. This piece of code was written by Jochen Schulz (jrschulz), who made a great Python library for metric spaces. This is the link to the complete source: Module mspace. 
+"
+477816	"Which JSON content type do I use?
+
+There are many ""standards"" for the JSON content type:
+application/json
+application/x-javascript
+text/javascript
+text/x-javascript
+text/x-json
+
+Which one do I use, and where? I assume security and browser support issues are a factor.
+Related: What MIME type if JSON is being returned by a REST API?
+"
+5767325	"How can I remove a specific item from an array?
+
+How do I remove a specific value from an array? Something like:
+array.remove(value);
+
+I have to use core JavaScript. Frameworks are not allowed.
+"
+6591213	"How do I rename a local Git branch?
+
+How do I rename a local branch which has not yet been pushed to a remote repository?
+Related:
+
+Rename master branch for both local and remote Git repositories
+How do I rename both a Git local and remote branch name?
+
+"
+348170	"How do I undo 'git add' before commit?
+
+I mistakenly added files to Git using the command:
+git add myfile.txt
+
+I have not yet run git commit. How do I undo this so that these changes will not be included in the commit?
+"
+1642028	"What is the ""-->"" operator in C++?
+
+After reading Hidden Features and Dark Corners of C++/STL on comp.lang.c++.moderated, I was completely surprised that the following snippet compiled and worked in both Visual Studio 2008 and G++ 4.4.
+Here's the code:
+#include <stdio.h>
+int main()
+{
+    int x = 10;
+    while (x --> 0) // x goes to 0
+    {
+        printf(""%d "", x);
+    }
+}
+
+Output:
+9 8 7 6 5 4 3 2 1 0
+
+I'd assume this is C, since it works in GCC as well. Where is this defined in the standard, and where has it come from?
+"
+244777	"Can comments be used in JSON?
+
+Can I use comments inside a JSON file? If so, how?
+"
+79923	"What and where are the stack and heap?
+
+
+What are the stack and heap?
+Where are they located physically in a computer's memory?
+To what extent are they controlled by the OS or language run-time?
+What is their scope?
+What determines their sizes?
+What makes one faster?
+
+"
+1125968	"How do I force ""git pull"" to overwrite local files?
+
+How do I force an overwrite of local files on a git pull? My local repository contains a file of the same filename as on the server.
+
+error: Untracked working tree file 'example.txt' would be overwritten by merge
+
+"
+8318911	"Why does HTML think “chucknorris” is a color?
+
+Why do certain random strings produce colors when entered as background colors in HTML?
+For example, bgcolor=""chucknorris"" produces a red background:
+
+
+<body bgcolor=""chucknorris""> test </body>
+
+
+
+Conversely,  bgcolor=""chucknorr"" produces a yellow background:
+
+
+<body bgcolor=""chucknorr""> test </body>
+
+
+
+This holds true across various browsers and platforms. What’s going on here?
+"
+178325	"How do I check if an element is hidden in jQuery?
+
+How do I toggle the visibility of an element using  .hide(), .show(), or .toggle()?
+How do I test if an element is visible or hidden?
+"
+1335851	"What does ""use strict"" do in JavaScript, and what is the reasoning behind it?
+
+Recently, I ran some of my JavaScript code through Crockford's JSLint, and it gave the following error:
+
+Problem at line 1 character 1: Missing ""use strict"" statement.
+
+Doing some searching, I realized that some people add ""use strict""; into their JavaScript code. Once I added the statement, the error stopped appearing. Unfortunately, Google did not reveal much of the history behind this string statement. Certainly it must have something to do with how the JavaScript is interpreted by the browser, but I have no idea what the effect would be.
+So what is ""use strict""; all about, what does it imply, and is it still relevant?
+Do any of the current browsers respond to the ""use strict""; string or is it for future use?
+"
+1783405	"How do I check out a remote Git branch?
+
+Somebody pushed a branch called test with git push origin test to a shared repository. I can see the branch with git branch -r. How do I check out the remote test branch? I've tried:
+
+git checkout test, which does nothing
+git checkout origin/test gives * (no branch)
+
+"
+419163	"What does if __name__ == ""__main__"": do?
+
+What does this do, and why should one include the if statement?
+if __name__ == ""__main__"":
+    print(""Hello, World!"")
+
+
+If you are trying to close a question where someone should be using this idiom and isn't, consider closing as a duplicate of Why is Python running my module when I import it, and how do I stop it? instead. For questions where someone simply hasn't called any functions, or incorrectly expects a function named main to be used as an entry point automatically, use Why doesn't the main() function run when I start a Python script? Where does the script start running?.
+"
+61212	"How do I remove local (untracked) files from the current Git working tree?
+
+How do I delete untracked local files from the current working tree?
+"
+503093	"How do I redirect to another webpage?
+
+How can I redirect the user from one page to another using jQuery or pure JavaScript?
+"
+179123	"How to modify existing, unpushed commit messages?
+
+I wrote the wrong thing in a commit message.
+
+How can I change the message? The commit has not been pushed yet.
+"
+111102	"How do JavaScript closures work?
+
+How would you explain JavaScript closures to someone with a knowledge of the concepts they consist of (for example functions, variables and the like), but does not understand closures themselves?
+
+I have seen the Scheme example given on Wikipedia, but unfortunately it did not help.
+"
+1274057	"How do I make Git forget about a file that was tracked, but is now in .gitignore?
+
+I put a file that was previously being tracked by Git onto the .gitignore list. However, the file still shows up in git status after it is edited. How do I force Git to completely forget the file?
+"
+4114095	"How do I revert a Git repository to a previous commit?
+
+How do I revert from my current state to a snapshot made on a certain commit?
+
+If I do git log, then I get the following output:
+
+$ git log
+commit a867b4af366350be2e7c21b8de9cc6504678a61b`
+Author: Me <me@me.com>
+Date:   Thu Nov 4 18:59:41 2010 -0400
+
+blah blah blah...
+
+commit 25eee4caef46ae64aa08e8ab3f988bc917ee1ce4
+Author: Me <me@me.com>
+Date:   Thu Nov 4 05:13:39 2010 -0400
+
+more blah blah blah...
+
+commit 0766c053c0ea2035e90f504928f8df3c9363b8bd
+Author: Me <me@me.com>
+Date:   Thu Nov 4 00:55:06 2010 -0400
+
+And yet more blah blah...
+
+commit 0d1d7fc32e5a947fbd92ee598033d85bfc445a50
+Author: Me <me@me.com>
+Date:   Wed Nov 3 23:56:08 2010 -0400
+
+Yep, more blah blah.
+
+
+How do I revert to the commit from November 3, i.e. commit 0d1d7fc?
+"
+394809	"Does Python have a ternary conditional operator?
+
+Is there a ternary conditional operator in Python?
+"
+336859	"var functionName = function() {} vs function functionName() {}
+
+I've recently started maintaining someone else's JavaScript code. I'm fixing bugs, adding features and also trying to tidy up the code and make it more consistent.
+The previous developer used two ways of declaring functions and I can't work out if there is a reason behind it or not.
+The two ways are:
+var functionOne = function() {
+    // Some code
+};
+
+
+function functionTwo() {
+    // Some code
+}
+
+What are the reasons for using these two different methods and what are the pros and cons of each? Is there anything that can be done with one method that can't be done with the other?
+"
+6841333	"Why is subtracting these two times (in 1927) giving a strange result?
+
+If I run the following program, which parses two date strings referencing times 1 second apart and compares them:
+public static void main(String[] args) throws ParseException {
+    SimpleDateFormat sf = new SimpleDateFormat(""yyyy-MM-dd HH:mm:ss"");  
+    String str3 = ""1927-12-31 23:54:07"";  
+    String str4 = ""1927-12-31 23:54:08"";  
+    Date sDt3 = sf.parse(str3);  
+    Date sDt4 = sf.parse(str4);  
+    long ld3 = sDt3.getTime() /1000;  
+    long ld4 = sDt4.getTime() /1000;
+    System.out.println(ld4-ld3);
+}
+
+The output is:
+353
+
+Why is ld4-ld3, not 1 (as I would expect from the one-second difference in the times), but 353?
+If I change the dates to times 1 second later:
+String str3 = ""1927-12-31 23:54:08"";  
+String str4 = ""1927-12-31 23:54:09"";  
+
+Then ld4-ld3 will be 1.
+
+Java version:
+java version ""1.6.0_22""
+Java(TM) SE Runtime Environment (build 1.6.0_22-b04)
+Dynamic Code Evolution Client VM (build 0.2-b02-internal, 19.0-b04-internal, mixed mode)
+
+Timezone(`TimeZone.getDefault()`):
+
+sun.util.calendar.ZoneInfo[id=""Asia/Shanghai"",
+offset=28800000,dstSavings=0,
+useDaylight=false,
+transitions=19,
+lastRule=null]
+
+Locale(Locale.getDefault()): zh_CN
+
+"
+1789945	"How to check whether a string contains a substring in JavaScript?
+
+Usually I would expect a String.contains() method, but there doesn't seem to be one. 
+
+What is a reasonable way to check for this?
+"
+7074	"What is the difference between String and string in C#?
+
+What are the differences between these two and which one should I use?
+string s = ""Hello world!"";
+String s = ""Hello world!"";
+
+"
+208105	"How do I remove a property from a JavaScript object?
+
+Given an object:
+let myObject = {
+  ""ircEvent"": ""PRIVMSG"",
+  ""method"": ""newURI"",
+  ""regex"": ""^http://.*""
+};
+
+How do I remove the property regex to end up with the following myObject?
+let myObject = {
+  ""ircEvent"": ""PRIVMSG"",
+  ""method"": ""newURI""
+};
+
+"
+100003	"What are metaclasses in Python?
+
+What are metaclasses? What are they used for?
+"
+16956810	"How to find all files containing specific text (string) on Linux?
+
+How do I find all files containing a specific string of text within their file contents?
+The following doesn't work. It seems to display every single file in the system.
+find / -type f -exec grep -H 'text-to-find-here' {} \;
+
+"
+38987	"How do I merge two dictionaries in a single expression?
+
+I want to merge two dictionaries into a new dictionary.
+x = {'a': 1, 'b': 2}
+y = {'b': 3, 'c': 4}
+z = merge(x, y)
+
+>>> z
+{'a': 1, 'b': 3, 'c': 4}
+
+Whenever a key k is present in both dictionaries, only the value y[k] should be kept.
+"
+14220321	"How do I return the response from an asynchronous call?
+
+How do I return the response/result from a function foo that makes an asynchronous request?
+I am trying to return the value from the callback, as well as assigning the result to a local variable inside the function and returning that one, but none of those ways actually return the response — they all return undefined or whatever the initial value of the variable result is.
+Example of an asynchronous function that accepts a callback (using jQuery's ajax function):
+function foo() {
+    var result;
+
+    $.ajax({
+        url: '...',
+        success: function(response) {
+            result = response;
+            // return response; // <- I tried that one as well
+        }
+    });
+
+    return result; // It always returns `undefined`
+}
+
+Example using Node.js:
+function foo() {
+    var result;
+
+    fs.readFile(""path/to/file"", function(err, data) {
+        result = data;
+        // return data; // <- I tried that one as well
+    });
+
+    return result; // It always returns `undefined`
+}
+
+Example using the then block of a promise:
+function foo() {
+    var result;
+
+    fetch(url).then(function(response) {
+        result = response;
+        // return response; // <- I tried that one as well
+    });
+
+    return result; // It always returns `undefined`
+}
+
+"
+2025282	"What is the difference between px, dip, dp, and sp?
+
+What is the difference between the units of measure
+px, dip, dp, and sp?
+"
+1628563	"Move the most recent commit(s) to a new branch with Git
+
+How do I move my recent commits on master to a new branch, and reset master to before those commits were made? e.g. From this:
+master A - B - C - D - E
+
+To this:
+newbranch     C - D - E
+             /
+master A - B 
+
+"
+630453	"What is the difference between POST and PUT in HTTP?
+
+According to RFC 2616, § 9.5, POST is used to create a resource:
+
+The POST method is used to request that the origin server accept the entity enclosed in the request as a new subordinate of the resource identified by the Request-URI in the Request-Line.
+
+According to RFC 2616, § 9.6, PUT is used to create or replace a resource:
+
+The PUT method requests that the enclosed entity be stored under the supplied Request-URI. If the Request-URI refers to an already existing resource, the enclosed entity SHOULD be considered as a modified version of the one residing on the origin server. If the Request-URI does not point to an existing resource, and that URI is capable of being defined as a new resource by the requesting user agent, the origin server can create the resource with that URI.
+
+So which HTTP method should be used to create a resource? Or should both be supported?
+"
+950087	"How do I include a JavaScript file in another JavaScript file?
+
+How do I include a JavaScript file inside another JavaScript file, similar to @import in CSS?
+"
+762011	"What is the difference between ""let"" and ""var""?
+
+ECMAScript 6 introduced the let statement.
+I've heard that it's described as a local variable, but I'm still not quite sure how it behaves differently than the var keyword.
+What are the differences? When should let be used instead of var?
+"
+52704	"How do I discard unstaged changes in Git?
+
+How do I discard changes in my working copy that are not in the index?
+"
+59895	"How do I get the directory where a Bash script is located from within the script itself?
+
+How do I get the path of the directory in which a Bash script is located, inside that script?
+I want to use a Bash script as a launcher for another application. I want to change the working directory to the one where the Bash script is located, so I can operate on the files in that directory, like so:
+$ ./application
+
+"
+89228	"How do I execute a program or call a system command?
+
+How do I call an external command within Python as if I had typed it in a shell or command prompt?
+"
+2432764	"How do I change the URI (URL) for a remote Git repository?
+
+I have a repo (origin) on a USB key that I cloned on my hard drive (local). I moved ""origin"" to a NAS and successfully tested cloning it from here.
+I would like to know if I can change the URI of ""origin"" in the settings of ""local"" so it will now pull from the NAS, and not from the USB key.
+For now, I can see two solutions:
+
+push everything to the USB origin, and copy it to the NAS again (implies a lot of work due to new commits to NAS origin);
+
+add a new remote to ""local"" and delete the old one (I fear I'll break my history).
+
+
+"
+359494	"Which equals operator (== vs ===) should be used in JavaScript comparisons?
+
+I'm using JSLint to go through JavaScript, and it's returning many suggestions to replace == (two equals signs) with === (three equals signs) when doing things like comparing idSele_UNVEHtype.value.length == 0 inside of an if statement.
+
+Is there a performance benefit to replacing == with ===? 
+
+Any performance improvement would be welcomed as many comparison operators exist.
+
+If no type conversion takes place, would there be a performance gain over ==?
+"
+417142	"What is the maximum length of a URL in different browsers?
+
+What is the maximum length of a URL for each browser?
+Is a maximum URL length part of the HTTP specification?
+"
+9329446	"Loop over an array in JavaScript
+
+How can I loop through all the entries in an array using JavaScript?
+"
+549	"The definitive guide to form-based website authentication
+
+
+Moderator note:
+This question is not a good fit for our question and answer format with the topicality rules which currently apply for Stack Overflow. We normally use a ""historical lock"" for such questions where the content still has value. However, the answers on this question are actively maintained and a historical lock doesn't permit editing of the answers. As such, a ""wiki answer"" lock has been applied to allow the answers to be edited. You should assume the topicality issues which are normally handled by a historical lock are present (i.e. this question not a good example of an on-topic question for Stack Overflow).
+
+Form-based authentication for websites
+We believe that Stack Overflow should not just be a resource for very specific technical questions, but also for general guidelines on how to solve variations on common problems. ""Form based authentication for websites"" should be a fine topic for such an experiment.
+It should include topics such as:
+
+How to log in
+How to log out
+How to remain logged in
+Managing cookies (including recommended settings)
+SSL/HTTPS encryption
+How to store passwords
+Using secret questions
+Forgotten username/password functionality
+Use of nonces to prevent cross-site request forgeries (CSRF)
+OpenID
+""Remember me"" checkbox
+Browser autocompletion of usernames and passwords
+Secret URLs (public URL protected by digest)
+Checking password strength
+E-mail validation
+and much more about form based authentication...
+
+It should not include things like:
+
+Roles and authorization
+HTTP basic authentication
+
+Please help us by:
+
+Suggesting subtopics
+Submitting good articles about this subject
+Editing the official answer
+
+"
+215718	"How do I reset or revert a file to a specific revision?
+
+How do I revert a modified file to its previous revision at a specific commit hash (which I determined via git log and git diff)?
+"
+46155	"How can I validate an email address in JavaScript?
+
+I'd like to check if the user input is an email address in JavaScript, before sending it to a server or attempting to send an email to it, to prevent the most basic mistyping. How could I achieve this?
+"
+273192	"How can I safely create a nested directory?
+
+I am writing a file using Python. How do I check:
+
+if the parent file directory exists
+if it does not - create the directory
+
+"
+2765421	"How do I push a new local branch to a remote Git repository and track it too?
+
+How do I:
+
+Create a local branch from another branch (via git branch or git checkout -b).
+
+Push the local branch
+to the remote repository (i.e. publish), but make it
+trackable so that git pull and git push will work.
+
+
+"
+1144783	"How do I replace all occurrences of a string in JavaScript?
+
+Given a string:
+s = ""Test abc test test abc test test test abc test test abc"";
+
+This seems to only remove the first occurrence of abc in the string above:
+s = s.replace('abc', '');
+
+How do I replace all occurrences of it?
+"
+487258	"What is a plain English explanation of ""Big O"" notation?
+
+I'd prefer as little formal definition as possible and simple mathematics.
+"
+1628088	"Reset local repository branch to be just like remote repository HEAD
+
+How do I reset my local branch to be just like the branch on the remote repository?
+I tried:
+git reset --hard HEAD
+
+But git status claims I have modified files:
+On branch master
+Changes to be committed:
+  (use ""git reset HEAD <file>..."" to unstage)
+      modified:   java/com/mycompany/TestContacts.java
+      modified:   java/com/mycompany/TestParser.java
+
+"
+161813	"How do I resolve merge conflicts in a Git repository?
+
+How do I resolve merge conflicts in my Git repository?
+"
+4089430	"How to determine the URL that a local Git repository was originally cloned from
+
+I pulled a project with several forks on GitHub, but forgot which fork it was. How do I determine which fork I pulled?
+"
+122102	"What is the most efficient way to deep clone an object in JavaScript?
+
+What is the most efficient way to clone a JavaScript object? I've seen obj = eval(uneval(o)); being used, but that's non-standard and only supported by Firefox. I've done things like obj = JSON.parse(JSON.stringify(o)); but question the efficiency.  I've also seen recursive copying functions with various flaws.
+
+I'm surprised no canonical solution exists.
+"
+38549	"What is the difference between ""INNER JOIN"" and ""OUTER JOIN""?
+
+Also, how do LEFT OUTER JOIN, RIGHT OUTER JOIN, and FULL OUTER JOIN fit in?
+"
+406230	"Regular expression to match a line that doesn't contain a word
+
+I know it's possible to match a word and then reverse the matches using other tools (e.g. grep -v). However, is it possible to match lines that do not contain a specific word, e.g. hede, using a regular expression?
+Input:
+hoho
+hihi
+haha
+hede
+
+Code:
+grep ""<Regex for 'doesn't contain hede'>"" input
+
+Desired output:
+hoho
+hihi
+haha
+
+"
+115983	"How do I add an empty directory to a Git repository?
+
+How do I add an empty directory (that contains no files) to a Git repository?
+"
+105034	"How do I create a GUID / UUID?
+
+How do I create GUIDs (globally-unique identifiers) in JavaScript? The GUID / UUID should be at least 32 characters and should stay in the ASCII range to avoid trouble when passing them around.
+I'm not sure what routines are available on all browsers, how ""random"" and seeded the built-in random number generator is, etc.
+"
+901712	"How do I check whether a checkbox is checked in jQuery?
+
+I need to check the checked property of a checkbox and perform an action based on the checked property using jQuery.
+For example, if the age checkbox is checked, then I need to show a textbox to enter age, else hide the textbox.
+But the following code returns false by default:
+
+
+if ($('#isAgeSelected').attr('checked')) {
+  $(""#txtAge"").show();
+} else {
+  $(""#txtAge"").hide();
+}
+<script src=""https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js""></script>
+<input type=""checkbox"" id=""isAgeSelected""/>
+<div id=""txtAge"" style=""display:none"">
+  Age is selected
+</div>
+
+
+
+How do I successfully query the checked property?
+"
+522563	"Accessing the index in 'for' loops
+
+How do I access the index while iterating over a sequence with a for loop?
+xs = [8, 23, 45]
+
+for x in xs:
+    print(""item #{} = {}"".format(index, x))
+
+Desired output:
+item #1 = 8
+item #2 = 23
+item #3 = 45
+
+"
+3737139	"Reference — What does this symbol mean in PHP?
+
+What is this?
+This is a collection of questions that come up every now and then about syntax in PHP. This is also a Community Wiki, so everyone is invited to participate in maintaining this list.
+Why is this?
+It used to be hard to find questions about operators and other syntax tokens.¹
+The main idea is to have links to existing questions on Stack Overflow, so it's easier for us to reference them, not to copy over content from the PHP Manual.
+Note: Since January 2013, Stack Overflow does support special characters. Just surround the search terms by quotes, e.g. [php] ""=="" vs ""===""
+What should I do here?
+If you have been pointed here by someone because you have asked such a question, please find the particular syntax below. The linked pages to the PHP manual along with the linked questions will likely answer your question then. If so, you are encouraged to upvote the answer. This list is not meant as a substitute for the help others provided.
+The List
+If your particular token is not listed below, you might find it in the List of Parser Tokens.
+
+& Bitwise Operators or References
+
+What does it mean to start a PHP function with an ampersand?
+Understanding PHP & (ampersand, bitwise and) operator
+PHP ""&"" operator
+Difference between & and && in PHP
+What does ""&"" mean here in PHP?
+What does ""&"" mean in this case?
+What does the ""&"" sign mean in PHP?
+What does this signature mean (&) in PHP?
+How does the ""&"" operator work in a PHP function?
+What does & in &2 mean in PHP?
+When should I use a bitwise operator?
+Is there ever a need to use ampersand in front of an object? (&$)
+
+
+=& References
+
+Reference assignment operator in PHP, =&
+What do the ""=&"" and ""&="" operators in PHP mean?
+What do the '&=' and '=&' operators do?
+What does =& mean in PHP?
+
+
+&= Bitwise Operators
+
+What do the ""=&"" and ""&="" operators in PHP mean?
+What do the '&=' and '=&' operators do?
+
+
+&& Logical Operators
+
+'AND' vs '&&' as operator
+Difference between & and && in PHP
+Is there any difference between ""and"" and ""&&"" operators in PHP?
+PHP - and / or keywords
+
+
+% Arithmetic Operators
+
+What does the percent sign mean in PHP?
+What is the PHP operator % and how do I use it in real-world examples?
+
+
+!! Logical Operators
+
+Double not (!!) operator in PHP
+
+
+@ Error Control Operators
+
+What is the use of the @ symbol in PHP?
+'At' symbol before variable name in PHP: @$_POST
+PHP functions and @functions
+Should I use @ in my PHP code?
+What does @ mean in PHP?
+
+
+?: Ternary Operator
+
+What are the PHP operators ""?"" and "":"" called and what do they do?
+?: operator (the 'Elvis operator') in PHP
+Where can I read about conditionals done with ""?"" and "":"" (colon)?
+Using PHP 5.3 ?: operator
+
+
+?? Null Coalesce Operator (since PHP 7)
+
+C#'s null coalescing operator (??) in PHP
+
+
+?string
+?int
+?array
+?bool
+?float Nullable return type declaration (since PHP 7.1)
+
+Nullable return type declaration
+Nullable parameter type declaration
+php method argument type hinting with question mark (?type)
+
+
+: Alternative syntax for control structures, Ternary Operator, Return Type Declaration
+
+What is "":"" in PHP?
+What does "":"" mean in PHP?
+Colon after method declaration?
+
+
+:: Scope Resolution Operator
+
+What do two colons mean in PHP?
+What's the meaning of the PHP token name T_PAAMAYIM_NEKUDOTAYIM?
+What's the difference between :: (double colon) and -> (arrow) in PHP?
+What exactly are late static bindings in PHP?
+static::staticFunctionName()
+Unexpected T_PAAMAYIM_NEKUDOTAYIM, expecting T_NS_Separator
+
+
+\ Namespaces
+
+Backslash in PHP -- what does it mean?
+What does a \ (backslash) do in PHP (5.3+)?
+
+
+-> Classes And Objects
+
+What is the ""->"" PHP operator called?
+Where do we use the object operator ""->"" in PHP?
+What's the difference between :: (double colon) and -> (arrow) in PHP?
+What does the PHP syntax $var1->$var2 mean?
+What does ""->"" mean/refer to in PHP?
+
+
+=> Arrays
+
+What does ""=>"" mean in PHP?
+Use of => in PHP
+What does $k => $v in foreach($ex as $k=>$v) mean?
+
+
+^ Bitwise Operators
+
+How does the bitwise operator XOR ('^') work?
+What does ^ mean in PHP?
+
+
+>> Bitwise Operators
+
+What does >> mean in PHP?
+
+
+<< Bitwise Operators
+
+Strange print behaviour in PHP?
+
+
+<<< Heredoc or Nowdoc
+
+What does <<<END mean in PHP?
+PHP expression <<<EOB
+In PHP, what does ""<<<"" represent?
+Using <<<CON in PHP
+What's this kind of syntax in PHP?
+
+
+= Assignment Operators
+
+The 3 different equals
+
+
+== Comparison Operators
+
+How do the PHP equality (== double equals) and identity (=== triple equals) comparison operators differ?
+PHP != and == operators
+The 3 different equals
+Type-juggling and (strict) greater/lesser-than comparisons in PHP
+
+
+=== Comparison Operators
+
+What does ""==="" mean?
+How do the PHP equality (== double equals) and identity (=== triple equals) comparison operators differ?
+The 3 different equals
+Type-juggling and (strict) greater/lesser-than comparisons in PHP
+
+
+!== Comparison Operators
+
+What does !== comparison operator in PHP mean?
+Is there a difference between !== and != in PHP?
+
+
+!= Comparison Operators
+
+PHP != and == operators
+Is there a difference between !== and != in PHP?
+comparing, !== versus !=
+What is the difference between <> and !=
+
+
+<> Comparison Operators
+
+PHP operator <>
+PHP's <> operator
+What is the difference between <> and !=
+Type-juggling and (strict) greater/lesser-than comparisons in PHP
+
+
+<=> Comparison Operators (since PHP 7.0)
+
+Spaceship (three way comparison) operator
+
+
+| Bitwise Operators
+
+What is the difference between the | and || operators?
+What Does Using A Single Pipe '|' In A Function Argument Do?
+
+
+|| Logical Operators
+
+What is the difference between the | and || operators?
+PHP - and / or keywords
+What exactly does || mean?
+The behaviour of the or operator in PHP
+
+
+~ Bitwise Operators
+
+What does this ~ operator mean here?
+
+
++ Arithmetic Operators, Array Operators
+
++ operator for array in PHP?
+
+
++= and -= Assignment Operators
+
+What is += used for?
+What does `$page -= 1` in my PHP document mean?
+
+
+++ and -- Incrementing/Decrementing Operators
+
+Understanding Incrementing
+Answer below
+
+
+.= Assignment Operators
+
+What is the difference between .= and += in PHP?
+To understand a line of PHP
+
+
+. String Operators
+
+Difference between period and comma when concatenating with echo versus return?
+What does a . (dot) do in PHP?
+
+
+, Function Arguments
+
+Difference between period and comma when concatenating with echo versus return?
+
+, Variable Declarations
+
+What do commas mean in a variable declaration?
+
+
+$$ Variable Variables
+
+What does $$ (dollar dollar or double dollar) mean in PHP?
+what is ""$$"" in PHP
+$function() and $$variable
+
+
+` Execution Operator
+
+What are the backticks `` called?
+
+
+<?= Short Open Tags
+
+What does this symbol mean in PHP <?=
+What does '<?=' mean in PHP?
+What does <?= mean?
+
+
+[] Arrays (short syntax since PHP 5.4)
+
+PHP arrays... What is/are the meaning(s) of an empty bracket?
+What is the meaning of []
+Php array_push() vs myArray[]
+What does [] mean when reading from a PHP array?
+Shorthand for arrays: literal $var = [] empty array
+
+
+<? Opening and Closing tags
+
+Are PHP short tags acceptable to use?
+
+
+.. Double-dot character range
+
+Native PHP functions that allow double-dot range syntax
+
+
+... Argument unpacking (since PHP 5.6)
+
+** Exponentiation (since PHP 5.6)
+
+# One-line shell-style comment
+
+Can I use hashes for comments in PHP?
+
+
+?-> NullSafe Operator Calls (since PHP 8.0)
+
+Is there a ""nullsafe operator"" in PHP?
+
+
+"
+952914	"How do I make a flat list out of a list of lists?
+
+I have a list of lists like [[1, 2, 3], [4, 5, 6], [7], [8, 9]]. How can I flatten it to get [1, 2, 3, 4, 5, 6, 7, 8, 9]?
+
+If your list of lists comes from a nested list comprehension, the problem can be solved more simply/directly by fixing the comprehension; please see python list comprehensions; compressing a list of lists?.
+The most popular solutions here generally only flatten one ""level"" of the nested list. See Flatten an irregular (arbitrarily nested) list of lists for solutions that completely flatten a deeply nested structure (recursively, in general).
+"
+11828270	"How do I exit Vim?
+
+I am stuck and cannot escape. It says:
+type :quit<Enter> to quit VIM
+
+But when I type that it simply appears in the object body.
+"
+114543	"How can I horizontally center an element?
+
+How can I horizontally center a <div> within another <div> using CSS?
+<div id=""outer"">
+  <div id=""inner"">Foo foo</div>
+</div>
+
+
+"
+5189560	"How do I squash my last N commits together?
+
+How do I squash my last N commits together into one commit?
+"
+22343224	"What's the difference between tilde(~) and caret(^) in package.json?
+
+After I upgraded to the latest stable node and npm, I tried npm install moment --save. It saves the entry in the package.json with the caret ^ prefix. Previously, it was a tilde ~ prefix.
+
+Why are these changes made in npm?
+What is the difference between tilde ~ and caret ^?
+What are the advantages over others?
+
+"
+176264	"What is the difference between a URI, a URL, and a URN?
+
+What is the difference between a URL, a URI, and a URN?
+"
+237104	"How do I check if an array includes a value in JavaScript?
+
+What is the most concise and efficient way to find out if a JavaScript array contains a value?
+This is the only way I know to do it:
+function contains(a, obj) {
+    for (var i = 0; i < a.length; i++) {
+        if (a[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
+
+Is there a better and more concise way to accomplish this?
+This is very closely related to Stack Overflow question Best way to find an item in a JavaScript Array? which addresses finding objects in an array using indexOf.
+"
+4456438	"How to pass ""Null"" (a real surname!) to a SOAP web service in ActionScript 3
+
+We have an employee whose surname is Null. Our employee lookup application is killed when that last name is used as the search term (which happens to be quite often now). The error received (thanks Fiddler!) is:
+
+<soapenv:Fault>
+   <faultcode>soapenv:Server.userException</faultcode>
+   <faultstring>coldfusion.xml.rpc.CFCInvocationException: [coldfusion.runtime.MissingArgumentException : The SEARCHSTRING parameter to the getFacultyNames function is required but was not passed in.]</faultstring>
+
+
+Cute, huh?
+
+The parameter type is string.
+
+I am using:
+
+
+WSDL (SOAP)
+Flex 3.5
+ActionScript 3
+ColdFusion 8
+
+
+Note that the error does not occur when calling the webservice as an object from a ColdFusion page.
+"
+2389361	"Undo a Git merge that hasn't been pushed yet
+
+I accidentally ran git merge some_other_branch on my local master branch. I haven't pushed the changes to origin master. How do I undo the merge?
+
+After merging, git status says:
+# On branch master
+# Your branch is ahead of 'origin/master' by 5 commits.
+
+How do I undo all these commits?
+"
+221294	"How do I get a timestamp in JavaScript?
+
+I want a single number that represents the current date and time, like a Unix timestamp.
+"
+67699	"How do I clone all remote branches?
+
+My master and development branches are tracked remotely on GitHub. How do I clone both these branches?
+"
+309424	"How do I read / convert an InputStream into a String in Java?
+
+If you have a java.io.InputStream object, how should you process that object and produce a String?
+
+Suppose I have an InputStream that contains text data, and I want to convert it to a String, so for example I can write that to a log file.
+What is the easiest way to take the InputStream and convert it to a String?
+public String convertStreamToString(InputStream is) {
+// ???
+}
+
+"
+7244321	"How do I update or sync a forked repository on GitHub?
+
+I forked a project, made changes, and created a pull request which was accepted. New commits were later added to the repository. How do I get those commits into my fork?
+"
+426258	"Setting ""checked"" for a checkbox with jQuery
+
+I'd like to do something like this to tick a checkbox using jQuery:
+
+$("".myCheckBox"").checked(true);
+
+
+or
+
+$("".myCheckBox"").selected(true);
+
+
+Does such a thing exist?
+"
+5480258	"How can I delete a remote tag?
+
+How can I delete a Git tag that has already been pushed?
+"
+14994391	"""Thinking in AngularJS"" if I have a jQuery background?
+
+Suppose I'm familiar with developing client-side applications in jQuery, but now I'd like to start using AngularJS. Can you describe the paradigm shift that is necessary? Here are a few questions that might help you frame an answer:
+
+
+How do I architect and design client-side web applications differently? What is the biggest difference?
+What should I stop doing/using; What should I start doing/using instead?
+Are there any server-side considerations/restrictions?
+
+
+I'm not looking for a detailed comparison between jQuery and AngularJS.
+"
+136097	"Difference between @staticmethod and @classmethod
+
+What is the difference between a function decorated with @staticmethod and one decorated with @classmethod?
+"
+509211	"Understanding slicing
+
+How does Python's slice notation work? That is: when I write code like a[x:y:z], a[:], a[::2] etc., how can I understand which elements end up in the slice? Please include references where appropriate.
+
+See also: Why are slice and range upper-bound exclusive?
+"
+2669690	"Why does Google prepend while(1); to their JSON responses?
+
+Why does Google prepend while(1); to their (private) JSON responses?
+
+For example, here's a response while turning a calendar on and off in Google Calendar:
+
+while (1);
+[
+  ['u', [
+    ['smsSentFlag', 'false'],
+    ['hideInvitations', 'false'],
+    ['remindOnRespondedEventsOnly', 'true'],
+    ['hideInvitations_remindOnRespondedEventsOnly', 'false_true'],
+    ['Calendar ID stripped for privacy', 'false'],
+    ['smsVerifiedFlag', 'true']
+  ]]
+]
+
+
+I would assume this is to prevent people from doing an eval() on it, but all you'd really have to do is replace the while and then you'd be set. I would assume the eval prevention is to make sure people write safe JSON parsing code.
+
+I've seen this used in a couple of other places, too, but a lot more so with Google (Mail, Calendar, Contacts, etc.) Strangely enough, Google Docs starts with &&&START&&& instead, and Google Contacts seems to start with while(1); &&&START&&&.
+
+What's going on here?
+"
+271526	"Avoiding NullPointerException in Java
+
+I use x != null to avoid NullPointerException. Is there an alternative?
+if (x != null) {
+    // ...
+}
+
+"
+400212	"How do I copy to the clipboard in JavaScript?
+
+How do I copy text to the clipboard (multi-browser)?
+Related: How does Trello access the user's clipboard?
+"
+16047306	"How is Docker different from a virtual machine?
+
+I keep rereading the Docker documentation to try to understand the difference between Docker and a full VM. How does it manage to provide a full filesystem, isolated networking environment, etc. without being as heavy?
+
+Why is deploying software to a Docker image (if that's the right term) easier than simply deploying to a consistent production environment?
+"
+2610497	"Change a HTML5 input's placeholder color with CSS
+
+Chrome supports the placeholder attribute on input[type=text] elements (others probably do too).
+But the following CSS doesn't do anything to the placeholder's value:
+
+
+input[placeholder], [placeholder], *[placeholder] {
+    color: red !important;
+}
+<input type=""text"" placeholder=""Value"">
+
+
+
+But Value will still remain grey instead of red.
+Is there a way to change the color of the placeholder text?
+"
+105372	"How to enumerate an enum?
+
+How can you enumerate an enum in C#?
+
+E.g. the following code does not compile:
+
+public enum Suit
+{
+    Spades,
+    Hearts,
+    Clubs,
+    Diamonds
+}
+
+public void EnumerateAllSuitsDemoMethod()
+{
+    foreach (Suit suit in Suit)
+    {
+        DoSomething(suit);
+    }
+}
+
+
+And it gives the following compile-time error:
+
+
+  'Suit' is a 'type' but is used like a 'variable'
+
+
+It fails on the Suit keyword, the second one.
+"
+1260748	"How do I remove a submodule?
+
+How do I remove a Git submodule?
+Why can't I do
+git submodule rm module_name?
+"
+1109022	"How to close/hide the Android soft keyboard programmatically?
+
+I have an EditText and a Button in my layout.
+After writing in the edit field and clicking on the Button, I want to hide the virtual keyboard when touching outside the keyboard. I assume that this is a simple piece of code, but where can I find an example of it?
+"
+59838	"How do I check if a directory exists in a Bash shell script?
+
+What command checks if a directory exists or not within a Bash shell script?
+"
+40471	"What are the differences between a HashMap and a Hashtable in Java?
+
+What are the differences between a HashMap and a Hashtable in Java?
+
+Which is more efficient for non-threaded applications?
+"
+176918	"Finding the index of an item in a list
+
+Given a list [""foo"", ""bar"", ""baz""] and an item in the list ""bar"", how do I get its index 1?
+"
+671118	"What is RESTful programming?
+
+What exactly is RESTful programming?
+
+"
+2334712	"How do I UPDATE from a SELECT in SQL Server?
+
+In SQL Server, it is possible to insert rows into a table with an INSERT.. SELECT statement:
+INSERT INTO Table (col1, col2, col3)
+SELECT col1, col2, col3 
+FROM other_table 
+WHERE sql = 'cool'
+
+Is it also possible to update a table with SELECT? I have a temporary table containing the values and would like to update another table using those values. Perhaps something like this:
+UPDATE Table SET col1, col2
+SELECT col1, col2 
+FROM other_table 
+WHERE sql = 'cool'
+WHERE Table.id = other_table.id
+
+"
+14415881	"How can I pair socks from a pile efficiently?
+
+Yesterday I was pairing the socks from the clean laundry and figured out the way I was doing it is not very efficient. I was doing a naive search — picking one sock and ""iterating"" the pile in order to find its pair. This requires iterating over n/2 * n/4 = n2/8 socks on average.
+
+As a computer scientist I was thinking what I could do? Sorting (according to size/color/...) of course came to mind to achieve an O(NlogN) solution.
+
+Hashing or other not-in-place solutions are not an option, because I am not able to duplicate my socks (though it could be nice if I could).
+
+So, the question is basically:
+
+Given a pile of n pairs of socks, containing 2n elements (assume each sock has exactly one matching pair), what is the best way to pair them up efficiently with up to logarithmic extra space? (I believe I can remember that amount of info if needed.)
+
+I will appreciate an answer that addresses the following aspects:
+
+
+A general theoretical solution for a huge number of socks.
+The actual number of socks is not that large, I don't believe my spouse and I have more than 30 pairs. (And it is fairly easy to distinguish between my socks and hers; can this be used as well?)
+Is it equivalent to the element distinctness problem?
+
+"
+3294889	"Iterating over dictionaries using 'for' loops
+
+d = {'x': 1, 'y': 2, 'z': 3}
+
+for key in d:
+    print(key, 'corresponds to', d[key])
+
+How does Python recognize that it needs only to read the key from the dictionary? Is key a special keyword, or is it simply a variable?
+"
+1338728	"How do I delete a commit from a branch?
+
+How do I delete a commit from my branch history?
+Should I use git reset --hard HEAD?
+"
+134882	"Undoing a git rebase
+
+How do I easily undo a git rebase? A lengthy manual method is:
+
+checkout the commit parent to both of the branches
+create and checkout a temporary branch
+cherry-pick all commits by hand
+reset the faulty rebased branch to point to the temporary branch
+
+In my current situation, this works because I can easily spot commits from both branches (one was my stuff, the other was my colleague's stuff). However, my approach strikes me as suboptimal and error-prone (let's say I had just rebased with two of my own branches).
+Clarification: I am talking about a rebase during which multiple commits were replayed, not only one.
+"
+157944	"Create ArrayList from array
+
+Given an array of type Element[]:
+Element[] array = {new Element(1), new Element(2), new Element(3)};
+
+How do I convert this array into an object of type ArrayList<Element>?
+ArrayList<Element> arrayList = ???;
+
+"

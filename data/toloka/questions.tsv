@@ -1,0 +1,156 @@
+INPUT:question_id	INPUT:question	GOLDEN:answer	HINT:text
+11227809	"Why is processing a sorted array faster than processing an unsorted array?
+
+Here is a piece of C++ code that shows some very peculiar behavior.
+For some reason, sorting the data (before the timed region) miraculously makes the primary loop almost six times faster:
+#include <algorithm>
+#include <ctime>
+#include <iostream>
+
+int main()
+{
+    // Generate data
+    const unsigned arraySize = 32768;
+    int data[arraySize];
+
+    for (unsigned c = 0; c < arraySize; ++c)
+        data[c] = std::rand() % 256;
+
+    // !!! With this, the next loop runs faster.
+    std::sort(data, data + arraySize);
+
+    // Test
+    clock_t start = clock();
+    long long sum = 0;
+    for (unsigned i = 0; i < 100000; ++i)
+    {
+        for (unsigned c = 0; c < arraySize; ++c)
+        {   // Primary loop.
+            if (data[c] >= 128)
+                sum += data[c];
+        }
+    }
+
+    double elapsedTime = static_cast<double>(clock()-start) / CLOCKS_PER_SEC;
+
+    std::cout << elapsedTime << '\n';
+    std::cout << ""sum = "" << sum << '\n';
+}
+
+
+Without std::sort(data, data + arraySize);, the code runs in 11.54 seconds.
+With the sorted data, the code runs in 1.93 seconds.
+
+(Sorting itself takes more time than this one pass over the array, so it's not actually worth doing if we needed to calculate this for an unknown array.)
+
+Initially, I thought this might be just a language or compiler anomaly, so I tried Java:
+import java.util.Arrays;
+import java.util.Random;
+
+public class Main
+{
+    public static void main(String[] args)
+    {
+        // Generate data
+        int arraySize = 32768;
+        int data[] = new int[arraySize];
+
+        Random rnd = new Random(0);
+        for (int c = 0; c < arraySize; ++c)
+            data[c] = rnd.nextInt() % 256;
+
+        // !!! With this, the next loop runs faster
+        Arrays.sort(data);
+
+        // Test
+        long start = System.nanoTime();
+        long sum = 0;
+        for (int i = 0; i < 100000; ++i)
+        {
+            for (int c = 0; c < arraySize; ++c)
+            {   // Primary loop.
+                if (data[c] >= 128)
+                    sum += data[c];
+            }
+        }
+
+        System.out.println((System.nanoTime() - start) / 1000000000.0);
+        System.out.println(""sum = "" + sum);
+    }
+}
+
+With a similar but less extreme result.
+
+My first thought was that sorting brings the data into the cache, but that's silly because the array was just generated.
+
+What is going on?
+Why is processing a sorted array faster than processing an unsorted array?
+
+The code is summing up some independent terms, so the order should not matter.
+
+Related / follow-up Q&As about the same effect with different/later compilers and options:
+
+Why is processing an unsorted array the same speed as processing a sorted array with modern x86-64 clang?
+gcc optimization flag -O3 makes code slower than -O2
+
+"		
+927358	"How do I undo the most recent local commits in Git?
+
+I accidentally committed the wrong files to Git, but didn't push the commit to the server yet.
+
+How do I undo those commits from the local repository?
+
+"		
+2003505	"How do I delete a Git branch locally and remotely?
+
+Failed Attempts to Delete a Remote Branch:
+$ git branch -d remotes/origin/bugfix
+error: branch 'remotes/origin/bugfix' not found.
+
+$ git branch -d origin/bugfix
+error: branch 'origin/bugfix' not found.
+
+$ git branch -rd origin/bugfix
+Deleted remote branch origin/bugfix (was 2a14ef7).
+
+$ git push
+Everything up-to-date
+
+$ git pull
+From github.com:gituser/gitproject
+
+* [new branch] bugfix -> origin/bugfix
+Already up-to-date.
+
+How do I properly delete the remotes/origin/bugfix branch both locally and remotely?
+"		
+292357	"What is the difference between &#39;git pull&#39; and &#39;git fetch&#39;?
+
+What are the differences between git pull and git fetch?
+"		
+231767	"What does the &quot;yield&quot; keyword do?
+
+What is the use of the yield keyword in Python? What does it do?
+For example, I'm trying to understand this code1:
+def _get_child_candidates(self, distance, min_dist, max_dist):
+    if self._leftchild and distance - max_dist < self._median:
+        yield self._leftchild
+    if self._rightchild and distance + max_dist >= self._median:
+        yield self._rightchild  
+
+And this is the caller:
+result, candidates = [], [self]
+while candidates:
+    node = candidates.pop()
+    distance = node._get_dist(obj)
+    if distance <= max_dist and distance >= min_dist:
+        result.extend(node._values)
+    candidates.extend(node._get_child_candidates(distance, min_dist, max_dist))
+return result
+
+What happens when the method _get_child_candidates is called?
+Is a list returned? A single element? Is it called again? When will subsequent calls stop?
+
+
+1. This piece of code was written by Jochen Schulz (jrschulz), who made a great Python library for metric spaces. This is the link to the complete source: Module mspace. 
+"		
