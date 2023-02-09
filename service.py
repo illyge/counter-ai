@@ -52,7 +52,8 @@ Classify an answer to a StackOverflow question as an output from GPT AI or not
 @svc.api(input=JSON(pydantic_model=CounterAIApp), output=JSON(), doc=api_doc_string)
 def classify(twitter_object):
     data = prepare_data(pd.DataFrame(twitter_object.dict(), index=[0]), train=False)
-    prediction = model_runner.predict.run(pd.DataFrame(data=data, index=[0]))
+    prediction = model_runner.predict_proba.run(pd.DataFrame(data=data, index=[0]))
     return {
-        'ai_generated': prediction == 1
+        'ai_generated': prediction[0][1] > 0.5,
+        'ai_probability': prediction[0][1]
     }
