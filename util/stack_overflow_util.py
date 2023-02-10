@@ -10,7 +10,7 @@ def fetch_questions(page, pagesize):
         "pagesize": pagesize,  # Number of questions per page
         "answers": 1,
         "filter": "!*MQIL7pRpsdq5H)nUUCB(_njhjqb",
-        "key": "gJE1zbvB18v8sS7Opl43lg((",
+        "key": "",
         "page": page
     }
 
@@ -68,7 +68,7 @@ def fetch_all_answers(question_id):
         "filter": "!*sVmCjZbt5MPsJxAfYAZLOjFCfva",
         "sort": "creation",
         "pagesize": 3,
-        "key": "gJE1zbvB18v8sS7Opl43lg(("
+        "key": ""
     }
 
     for timeout in answers_timeouts():
