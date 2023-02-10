@@ -27,7 +27,6 @@ def download_all_answers():
             preexisting_question_ids = set([a['question_id'] for a in list(answers_reader)])
             print(f"Already have downloaded answers for {len(preexisting_question_ids)} questions")
     except FileNotFoundError:
-        # open("./data/raw/answers/all_answers.jsonl", "w").close()
         preexisting_question_ids = []
     global nq
     with jsonlines.open("./data/raw/answers_human/all_answers.jsonl", mode="a") as output:
@@ -39,7 +38,6 @@ def download_all_answers():
                 nq += 1
 
 if __name__ == "__main__":
-    # download_answers()
     while True:
         try:
             download_all_answers()

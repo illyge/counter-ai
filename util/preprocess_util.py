@@ -1,5 +1,4 @@
 from nltk.stem import SnowballStemmer
-from nltk import everygrams
 import numpy as np
 from nltk.tokenize import sent_tokenize
 import nltk
