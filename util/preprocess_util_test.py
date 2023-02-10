@@ -234,8 +234,10 @@ class TestAddStealing(unittest.TestCase):
         add_stealing(df)
 
         # Then
-        np.testing.assert_almost_equal([0.0, 2, 3, 0], df.stealing_strength.tolist(), 2)
-        np.testing.assert_almost_equal([0.0, 0.33, 0.75, 0], df.stealing_frequency.tolist(), 2)
+        np.testing.assert_almost_equal(np.log1p([1, 2, 3, 0]), df.stealing_strength.tolist(), 2)
+        np.testing.assert_almost_equal(np.log1p([0.0, 0.33, 0.75, 0]), df.stealing_frequency.tolist(), 2)
+
+        # np.testing.assert_almost_equal([0.0, 0.33, 0.75, 0], df.stealing_frequency.tolist(), 2)
         self.assertNotIn('stolen_ngrams', df.columns)
 
 

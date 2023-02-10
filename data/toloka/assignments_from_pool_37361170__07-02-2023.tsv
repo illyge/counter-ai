@@ -1,0 +1,877 @@
+INPUT:question	INPUT:question_id	OUTPUT:answer	GOLDEN:answer	HINT:text	HINT:default_language	ASSIGNMENT:link	ASSIGNMENT:task_id	ASSIGNMENT:assignment_id	ASSIGNMENT:worker_id	ASSIGNMENT:status	ASSIGNMENT:started	ACCEPT:verdict	ACCEPT:comment
+"How do I rename a local Git branch?
+How do I rename a local branch which has not yet been pushed to a remote repository?
+Related:
+Rename master branch for both local and remote Git repositories
+How do I rename both a Git local and remote branch name?
+"	6591213	"To rename a local Git branch, you can use the command git branch -m old_branch_name new_branch_name. This will rename the local branch from ""old_branch_name"" to ""new_branch_name"".
+
+If you want to rename a local branch which has not yet been pushed to a remote repository, you can first rename the local branch with the above command, then use the command git push origin :old_branch_name new_branch_name to delete the old branch and push the new branch to the remote repository.
+
+If you want to rename both a local and remote branch, you would first rename the local branch as described above, then use the command git push origin :old_branch_name new_branch_name to delete the old remote branch and push the new branch. Then use the command git push origin -u new_branch_name to set the new remote branch as the default."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c3c0f64dab1c8a7c327b	00023a1612--63c96b36f603361fcb90d411	00023a1612--63c9c3c0f64dab1c8a7c327b	23de65e34db8fd81857e623b153d9415	APPROVED	2023-01-19T22:27:12.220	+	
+"How do I undo the most recent local commits in Git?
+I accidentally committed the wrong files to Git, but didn't push the commit to the server yet.
+How do I undo those commits from the local repository?
+"	927358	"You can use the git reset command to undo the most recent local commits in Git. The specific command you would use depends on how far back you want to reset the repository.
+
+To undo the most recent commit, use the command:
+git reset HEAD~
+This will reset the repository to the state of the commit before the most recent one.
+
+If you want to reset to a specific commit, you can use the commit's hash instead of HEAD~
+git reset <commit_hash>
+This will reset the repository to the state of the specific commit you specify.
+
+Be careful with using the above command as it will remove all commits after the specified commit and make them unrecoverable.
+
+Once you reset the repository, you can then recommit the files you want to keep."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c3f8e4ef243596e55dc7	00023a1612--63c96b36f603361fcb90d3f6	00023a1612--63c9c3f8e4ef243596e55dc7	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:28:08.006	+	
+"Which equals operator (== vs ===) should be used in JavaScript comparisons?
+I'm using JSLint to go through JavaScript, and it's returning many suggestions to replace == (two equals signs) with === (three equals signs) when doing things like comparing idSele_UNVEHtype.value.length == 0 inside of an if statement.
+Is there a performance benefit to replacing == with ===? 
+Any performance improvement would be welcomed as many comparison operators exist.
+If no type conversion takes place, would there be a performance gain over ==?
+"	359494	"In JavaScript, it is generally recommended to use the ""strict equality"" operator (===) when comparing values, rather than the ""loose equality"" operator (==).
+Using the strict equality operator will prevent unexpected type conversions from occurring.
+For example, if you use the loose equality operator to compare the number 0 and the string ""0"", the comparison will return true, because JavaScript will automatically convert the string to a number before making the comparison.
+
+Using === instead of == in JavaScript, it will not perform any type coercion and will only return true if the operands have the same type and the same value.
+
+There may be some performance benefits to using the strict equality operator in certain cases, as it avoids the need for JavaScript to perform type conversions. However, in most cases the difference in performance is likely to be negligible.
+
+So, it's a good practice to use === instead of == to avoid unexpected results, and in some cases it may also give a slight performance gain."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c44d0f3f3063a690d5ed	00023a1612--63c96b37f603361fcb90d4c7	00023a1612--63c9c44d0f3f3063a690d5ed	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:29:33.871	+	
+"How do I delete a Git branch locally and remotely?
+Failed Attempts to Delete a Remote Branch:
+$ git branch -d remotes/origin/bugfix
+error: branch 'remotes/origin/bugfix' not found.
+$ git branch -d origin/bugfix
+error: branch 'origin/bugfix' not found.
+$ git branch -rd origin/bugfix
+Deleted remote branch origin/bugfix (was 2a14ef7).
+$ git push
+Everything up-to-date
+$ git pull
+From github.com:gituser/gitproject
+* [new branch] bugfix -> origin/bugfix
+Already up-to-date.
+How do I properly delete the remotes/origin/bugfix branch both locally and remotely?
+"	2003505	"To delete a local branch, you can use the command git branch -d branch_name. In your case, you can use the command git branch -d bugfix to delete the local branch.
+
+To delete a remote branch, you need to use the command git push origin --delete branch_name. In your case, you can use the command git push origin --delete bugfix.
+
+If you want to delete the remote branch and local branch in one command you can use this command git push origin --delete bugfix && git branch -d bugfix
+
+It is important to note that when you delete a remote branch, it will only delete the branch on the remote repository and not on your local repository. To delete the local copy of the remote branch, you will need to run the local delete command after the remote delete command.
+
+Also, when you delete a branch, it should not have any unmerged commits. If it has any unmerged commits, git will prevent deletion and you need to merge those commits or use -D instead of -d to delete the branch forcefully.
+
+In your case, since you are trying to delete a remote branch, it seems that you are trying to delete the remote branch using the local branch name, the correct way to delete remote branch is by using the remote branch name and not local branch name, so it should be git push origin --delete remotes/origin/bugfix or simply git push origin --delete bugfix"				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c47a6ab61412b422f603	00023a1612--63c96b36f603361fcb90d3f9	00023a1612--63c9c47a6ab61412b422f603	2a1461a0c1a0092f7fa2e769aec10171	APPROVED	2023-01-19T22:30:18.262	+	
+"What are metaclasses in Python?
+What are metaclasses? What are they used for?
+"	100003	"In Python, a class is an object that defines the behavior and properties of other objects. A metaclass is a class that defines the behavior and properties of a class. In other words, a metaclass is the class of a class.
+
+Metaclasses are used to create custom class behavior, such as adding methods or properties to all instances of a particular class or group of classes. They can also be used for advanced metaprogramming, such as creating new types of classes dynamically or modifying the behavior of the class creation process.
+
+For example, you could use a metaclass to automatically add a method to all classes that inherit from a certain base class, or to create a singleton class that only allows one instance of the class to be created.
+
+In python, The type is the default metaclass for all classes, and it is responsible for creating the class object and its behavior. However, you can define your own metaclasses by subclassing type and implementing custom behavior.
+
+It's worth noting that metaclasses are considered an advanced feature of Python and are not commonly used in everyday programming. It is also considered as a somewhat complex topic and might not be needed in most cases."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c4e100c30a0e10ec6b4f	00023a1612--63c96b37f603361fcb90d47a	00023a1612--63c9c4e100c30a0e10ec6b4f	23de65e34db8fd81857e623b153d9415	APPROVED	2023-01-19T22:32:01.845	+	
+"How can I safely create a nested directory?
+I am writing a file using Python. How do I check:
+if the parent file directory exists
+if it does not - create the directory
+"	273192	"In Python, you can use the os module to safely create a nested directory. The os.makedirs() function can be used to create a directory, including any necessary parent directories. Here is an example of how to use this function to create a nested directory:
+
+import os
+
+directory = 'path/to/nested/directory'
+
+if not os.path.exists(directory):
+    os.makedirs(directory)
+This will check if the parent directory exists, if not it will create the directory.
+
+Another way to achieve this is using the os.path.exists() and os.makedirs() together:
+
+import os
+
+directory = 'path/to/nested/directory'
+
+if not os.path.exists(directory):
+    os.makedirs(directory, exist_ok=True)
+Here, the exist_ok parameter is set to True, which means that if the directory already exists, no exception will be raised.
+
+You can also use the os.path.isdir() function to check if the parent directory exists and os.mkdir() function to create a directory, if it does not exist.
+
+import os
+
+directory = 'path/to/nested/directory'
+parent_directory = os.path.dirname(directory)
+
+if not os.path.isdir(parent_directory):
+    os.mkdir(parent_directory)
+os.mkdir(directory)
+os.path.dirname() will give you the parent directory of a given directory path."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c4ed6ed7565e0d0846d5	00023a1612--63c96b38f603361fcb90d4e0	00023a1612--63c9c4ed6ed7565e0d0846d5	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:32:13.262	+	
+"What is the ""-->"" operator in C++?
+After reading Hidden Features and Dark Corners of C++/STL on comp.lang.c++.moderated, I was completely surprised that the following snippet compiled and worked in both Visual Studio 2008 and G++ 4.4.
+Here's the code:
+#include <stdio.h>
+int main()
+{
+    int x = 10;
+    while (x --> 0) // x goes to 0
+    {
+        printf(""%d "", x);
+    }
+}
+Output:
+9 8 7 6 5 4 3 2 1 0
+I'd assume this is C, since it works in GCC as well. Where is this defined in the standard, and where has it come from?
+"	1642028	"The --> operator is not a standard C++ operator and is not defined in the C++ standard. It appears to be a non-standard extension specific to certain compilers.
+
+It is likely that the feature is provided by the GCC and Visual Studio compilers as a shorthand for the common use case of counting down from a certain value to zero. The operator works by first decrementing the value of the left-hand side operand, then returning the original value before the decrement.
+
+It is worth noting that using non-standard features can make your code less portable, as it may not work with other compilers or platforms. It is also not recommended to use it in production code, as it is not part of the C++ standard and may be removed or changed in future versions of the compiler."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c5626ed7565e0d084c10	00023a1612--63c96b36f603361fcb90d41a	00023a1612--63c9c5626ed7565e0d084c10	23de65e34db8fd81857e623b153d9415	APPROVED	2023-01-19T22:34:10.366	+	
+"How to enumerate an enum?
+How can you enumerate an enum in C#?
+E.g. the following code does not compile:
+public enum Suit
+{
+    Spades,
+    Hearts,
+    Clubs,
+    Diamonds
+}
+public void EnumerateAllSuitsDemoMethod()
+{
+    foreach (Suit suit in Suit)
+    {
+        DoSomething(suit);
+    }
+}
+And it gives the following compile-time error:
+  'Suit' is a 'type' but is used like a 'variable'
+It fails on the Suit keyword, the second one.
+"	105372	"To enumerate the values of an enum in C#, you can use the Enum.GetValues method. Here's an example of how to use it with the Suit enum you provided:
+
+public void EnumerateAllSuitsDemoMethod()
+{
+    foreach (Suit suit in Enum.GetValues(typeof(Suit)))
+    {
+        DoSomething(suit);
+    }
+}
+Alternatively, you can use the Enum.GetNames method to get an array of strings representing the names of the enum values, and then use a for loop to access each value:
+
+public void EnumerateAllSuitsDemoMethod()
+{
+    string[] names = Enum.GetNames(typeof(Suit));
+    for (int i = 0; i < names.Length; i++)
+    {
+        Suit suit = (Suit)Enum.Parse(typeof(Suit), names[i]);
+        DoSomething(suit);
+    }
+}
+Both of these methods will give you the same result, but the first one is more concise."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c565f603361fcb9e9834	00023a1612--63c96b39f603361fcb90d57a	00023a1612--63c9c565f603361fcb9e9834	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:34:13.602	+	
+"What is the difference between String and string in C#?
+What are the differences between these two and which one should I use?
+string s = ""Hello world!"";
+String s = ""Hello world!"";
+"	7074	"to represent a sequence of characters, also known as a string.
+
+Both string and String are aliases for the System.String class. The string keyword is simply an alias for System.String that was introduced in C# for convenience and readability, so that you don't have to use the full namespace.
+
+The System.String class is a built-in class in the .NET framework that provides a number of methods for manipulating strings, such as Substring, IndexOf, Replace, and more.
+
+In terms of usage, it is common practice to use string keyword instead of System.String because it is shorter to type and more readable.
+
+So in the example you provided:
+string s = ""Hello world!"";
+String s = ""Hello world!"";
+Both lines will create a new string object with the value ""Hello world!"" and assigns it to the variable s.
+"				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c58b9c0a8722048013c9	00023a1612--63c96b37f603361fcb90d470	00023a1612--63c9c58b9c0a8722048013c9	23de65e34db8fd81857e623b153d9415	APPROVED	2023-01-19T22:34:51.164	+	
+"How do I clone all remote branches?
+My master and development branches are tracked remotely on GitHub. How do I clone both these branches?
+"	67699	"To clone all remote branches, you can use the command git clone --mirror <remote repository URL>. This will create a bare repository with all the branches and their full commit history.
+
+To clone specific branches, you can use the command git clone -b <branch name> <remote repository URL>. This will clone only the specified branch and its commit history. To clone multiple branches, repeat the command for each branch you want to clone. For example, to clone the master and development branches, you can run the following commands:
+
+git clone -b master <remote repository URL>
+git clone -b development <remote repository URL>
+This will create two separate directories, one for each branch, with the specified branch checked out and ready for development.
+
+Note that using the git clone --mirror will create a bare repository, where you can't do any development and it's intended to be used as a remote repository."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c5b4f8163b3faba4531f	00023a1612--63c96b38f603361fcb90d546	00023a1612--63c9c5b4f8163b3faba4531f	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:35:32.512	+	
+"What is the difference between ""let"" and ""var""?
+ECMAScript 6 introduced the let statement.
+I've heard that it's described as a local variable, but I'm still not quite sure how it behaves differently than the var keyword.
+What are the differences? When should let be used instead of var?
+"	762011	"In JavaScript, let and var are used to declare variables. However, they have some key differences in how they behave.
+
+The var keyword is used to declare a variable in JavaScript, and it is function scoped. This means that a variable declared with var is accessible within the entire function it was declared in, and it's hoisted to the top of the function.
+
+The let keyword, introduced in ECMAScript 6, is also used to declare variables but it's block scoped. This means that a variable declared with let is accessible only within the block it was declared in, and it's not hoisted to the top of the block.
+
+One of the most important difference between let and var is the temporal dead zone (TDZ). The variable declared with let inside a block cannot be accessed before it is declared. However, variables declared with var are accessible before they are declared, this is due to hoisting.
+
+In terms of when to use let instead of var, it's generally recommended to use let when you need a variable that is only accessible within a specific block, such as within a loop or an if statement. This can help you avoid errors caused by accidentally accessing or modifying a variable from the wrong scope."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c5b9f603361fcb9e9e5a	00023a1612--63c96b37f603361fcb90d4ab	00023a1612--63c9c5b9f603361fcb9e9e5a	23de65e34db8fd81857e623b153d9415	APPROVED	2023-01-19T22:35:37.016	+	
+"How do I squash my last N commits together?
+How do I squash my last N commits together into one commit?
+"	5189560	"You can squash your last N commits together into one commit using the git rebase command.
+
+Here's an example of how you can squash your last 3 commits together:
+
+# Make sure you are on the branch you want to squash commits on
+git rebase -i HEAD~3
+
+This will open an editor where you will see a list of your last 3 commits, with the most recent at the top. You will see the word ""pick"" before each commit. Replace ""pick"" on all the commits that you want to squash together with ""squash"" or ""s"" (all except the first one), save the file and exit.
+
+You will be prompted to edit the commit message for the new, squashed commit. You should make sure to provide a good summary of the changes made in the squashed commits.
+
+When you're finished editing the message, save the file and exit the editor.
+
+git push -f origin <branch-name>
+
+
+Then force push to the remote branch, this will update the remote branch to have the new squashed commit.
+
+It's important to note that squashing commits rewrites the commit history, so it's a good practice to only squash commits that haven't been pushed yet. If you squash commits that have already been pushed to a remote repository, you'll need to force push the changes, which can cause problems if other people are also working on the same branch."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c5c600c30a0e10ec7f4d	00023a1612--63c96b38f603361fcb90d52d	00023a1612--63c9c5c600c30a0e10ec7f4d	ffc5d2a1ec57e1fdabf2151abf1ca025	APPROVED	2023-01-19T22:35:50.846	+	
+"How do I add an empty directory to a Git repository?
+How do I add an empty directory (that contains no files) to a Git repository?
+"	115983	"You can add an empty directory to a Git repository by creating the directory in your local file system and then adding and committing it using Git. Here are the steps:
+
+Navigate to the parent directory of where you want to create the new empty directory.
+
+Run the command mkdir directory-name to create the new directory.
+
+Run the command git add directory-name to stage the new directory for commit.
+
+Run the command git commit -m ""added empty directory directory-name"" to commit the new directory to the repository.
+
+Alternatively, You can also create a new file in the empty directory and then commit that file as you would with any other file. This will add the directory to the repository as well.
+
+Note: If you want to add an already existing empty directory to git you can use touch command to create a new empty file in the directory , and then follow the above steps."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c611f8163b3faba457b9	00023a1612--63c96b38f603361fcb90d50b	00023a1612--63c9c611f8163b3faba457b9	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:37:05.329	+	
+"Accessing the index in 'for' loops
+How do I access the index while iterating over a sequence with a for loop?
+xs = [8, 23, 45]
+for x in xs:
+    print(""item #{} = {}"".format(index, x))
+Desired output:
+item #1 = 8
+item #2 = 23
+item #3 = 45
+"	522563	"Using the enumerate function:
+Copy code
+xs = [8, 23, 45]
+for index, x in enumerate(xs):
+    print(""item #{} = {}"".format(index+1, x))
+This will give you the desired output:
+
+Copy code
+item #1 = 8
+item #2 = 23
+item #3 = 45
+The enumerate function returns an iterator that produces tuples containing the index and the value of the elements in the sequence. By default, the index starts at 0, but you can set it to start at any value by passing a second argument to the enumerate function."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c62c0f3f3063a6910e94	00023a1612--63c96b38f603361fcb90d519	00023a1612--63c9c62c0f3f3063a6910e94	23de65e34db8fd81857e623b153d9415	APPROVED	2023-01-19T22:37:32.088	+	
+"How to close/hide the Android soft keyboard programmatically?
+I have an EditText and a Button in my layout.
+After writing in the edit field and clicking on the Button, I want to hide the virtual keyboard when touching outside the keyboard. I assume that this is a simple piece of code, but where can I find an example of it?
+"	1109022	"You can close the Android soft keyboard programmatically by using the InputMethodManager class.
+
+Here is an example of how you can use it in your code:
+
+    EditText editText = findViewById(R.id.edit_text);
+    Button button = findViewById(R.id.button);
+    
+    button.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+        }
+    });
+You can also use this code to hide the keyboard when the user touches outside the keyboard, using the following code in the onClick event of a view that covers the whole layout:
+
+    View view = this.getCurrentFocus();
+    if (view != null) {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+You can get more information from https://developer.android.com/reference/android/view/inputmethod/InputMethodManager"				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c63f9c0a872204801c13	00023a1612--63c96b39f603361fcb90d583	00023a1612--63c9c63f9c0a872204801c13	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:37:51.249	+	
+"What is the difference between px, dip, dp, and sp?
+What is the difference between the units of measure
+px, dip, dp, and sp?
+"	2025282	"In Android development, there are several units of measure that can be used to specify the size and position of elements in a layout. The most commonly used units are:
+
+px (pixels): This is the most basic unit of measure and represents a physical pixel on the device's screen. It is the default unit for specifying dimensions in Android.
+
+dip (density-independent pixels): This unit of measure scales with the density of the device's screen. On a high-density screen, 1 dip is equal to 2 pixels, while on a low-density screen, 1 dip is equal to 1 pixel. Using dip units helps ensure that the layout of your app looks consistent across different screen densities.
+
+dp (density-independent pixels): This unit of measure is equivalent to dip and it is an alias of it.
+
+sp (scale-independent pixels): This unit of measure is similar to dip, but it is also scaled based on the user's preferred text size. It is used for specifying font sizes.
+
+In short,
+
+px is fixed and does not scale with the screen density.
+dip/dp is relative to the screen density, but does not take into account the user's preferred text size.
+sp is relative to both the screen density and the user's preferred text size.
+
+In general, it's best to use sp for font sizes, and dp/dip for other dimensions, as this will ensure that your layout looks consistent across different devices and user settings"				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c64a00c30a0e10ec8df6	00023a1612--63c96b37f603361fcb90d48f	00023a1612--63c9c64a00c30a0e10ec8df6	ffc5d2a1ec57e1fdabf2151abf1ca025	APPROVED	2023-01-19T22:38:02.471	+	
+"What does the ""yield"" keyword do?
+What is the use of the yield keyword in Python? What does it do?
+For example, I'm trying to understand this code1:
+def _get_child_candidates(self, distance, min_dist, max_dist):
+    if self._leftchild and distance - max_dist < self._median:
+        yield self._leftchild
+    if self._rightchild and distance + max_dist >= self._median:
+        yield self._rightchild  
+And this is the caller:
+result, candidates = [], [self]
+while candidates:
+    node = candidates.pop()
+    distance = node._get_dist(obj)
+    if distance <= max_dist and distance >= min_dist:
+        result.extend(node._values)
+    candidates.extend(node._get_child_candidates(distance, min_dist, max_dist))
+return result
+What happens when the method _get_child_candidates is called?
+Is a list returned? A single element? Is it called again? When will subsequent calls stop?
+1. This piece of code was written by Jochen Schulz (jrschulz), who made a great Python library for metric spaces. This is the link to the complete source: Module mspace. 
+"	231767	"The ""yield""
+
+In the _get_child_candidates method, the yield
+
+When the method _get_child_candidates is called, it doesn't return anything. Instead, it returns a generator object, which is then used in the line ""candidates.extend(node._get_child_candidates(distance, min_dist, max_dist))"" to add the leftchild or rightchild node to the candidates list, one at a time.
+
+The generator will stop
+
+In this case, the generator will stop yielding values when there are no more leftchild or rightchild nodes to return, as there are no more iterations to be done."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c6510f3f3063a691133a	00023a1612--63c96b36f603361fcb90d400	00023a1612--63c9c6510f3f3063a691133a	eecfce578ec8f52e1db33743c0b80f7f	APPROVED	2023-01-19T22:38:09.421	+	
+"How is Docker different from a virtual machine?
+I keep rereading the Docker documentation to try to understand the difference between Docker and a full VM. How does it manage to provide a full filesystem, isolated networking environment, etc. without being as heavy?
+Why is deploying software to a Docker image (if that's the right term) easier than simply deploying to a consistent production environment?
+"	16047306	"Docker and virtual machines (VMs) are both technologies that allow you to run software in an isolated environment, but they work in different ways.
+
+A virtual machine is a software implementation of a physical machine that runs on top of a host operating system. Each VM runs its own operating system and has its own virtualized hardware, such as CPU, memory, and storage. This allows you to run multiple operating systems on the same physical machine, but it also makes VMs relatively heavy and resource-intensive.
+
+Docker, on the other hand, is a containerization technology that allows you to package software and its dependencies into a single container. A container is a lightweight, standalone executable package that includes everything needed to run the software, including the code, runtime, system tools, libraries, and settings. Because containers share the host operating system kernel, they are much more lightweight and efficient than VMs.
+
+When deploying software to a Docker image, it eliminates the ""works on my machine"" problem. It enables developers to package an application with all of its dependencies into a single container, which can run on any machine that has Docker installed. This makes it easier to deploy and run the same application in different environments, such as development, staging, and production, without worrying about compatibility issues.
+
+In summary, Docker provides an isolated environment for running software that is lightweight and efficient, because it shares the host operating system kernel, while virtual machines provide complete isolation by running their own kernel and hardware virtualization."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c6750f3f3063a6911615	00023a1612--63c96b39f603361fcb90d573	00023a1612--63c9c6750f3f3063a6911615	23de65e34db8fd81857e623b153d9415	APPROVED	2023-01-19T22:38:45.709	+	
+"How do I create a GUID / UUID?
+How do I create GUIDs (globally-unique identifiers) in JavaScript? The GUID / UUID should be at least 32 characters and should stay in the ASCII range to avoid trouble when passing them around.
+I'm not sure what routines are available on all browsers, how ""random"" and seeded the built-in random number generator is, etc.
+"	105034	"In JavaScript, you can use the crypto.getRandomValues() method to generate a cryptographically-secure random number, which you can then use to create a GUID/UUID. Here's an example of how you might generate a GUID:
+
+Copy code
+function generateGUID() {
+  // Generate four random hex digits.
+  function S4() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+  }
+  return (S4() + S4() + ""-"" + S4() + ""-4"" + S4().substr(0, 3) + ""-"" + S4() + ""-"" + S4() + S4() + S4()).toUpperCase();
+}
+Note that this function generates a version 4 UUID, which is the most common type of UUID. It has the format xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx where x is any hexadecimal digit and y is one of 8, 9, A, or B.
+
+It's important to note that while the Math.random() function is not cryptographically secure, it's sufficient for most use cases, and the usage of crypto.getRandomValues() would make it cryptographically secure.
+
+You can also use libraries like uuid or node-uuid for generating UUIDs, which provide a more robust solution and are also cross-platform."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c67bf64dab1c8a7c91f5	00023a1612--63c96b38f603361fcb90d50e	00023a1612--63c9c67bf64dab1c8a7c91f5	2a1461a0c1a0092f7fa2e769aec10171	APPROVED	2023-01-19T22:38:51.448	+	
+"How do I discard unstaged changes in Git?
+How do I discard changes in my working copy that are not in the index?
+"	52704	"To discard unstaged changes in Git, you can use the command git reset. This command will reset your working directory to the state of the last commit, discarding any changes that are not in the index.
+
+If you want to discard specific files, you can use the command git checkout -- <file> for each file you want to discard changes.
+
+You can also use git stash command to stash your changes and then git stash drop to discard the changes.
+
+Another way is to use git clean -f command to discard all the untracked files in the working directory."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c6849c0a872204802093	00023a1612--63c96b37f603361fcb90d4b4	00023a1612--63c9c6849c0a872204802093	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:39:00.497	+	
+"Change a HTML5 input's placeholder color with CSS
+Chrome supports the placeholder attribute on input[type=text] elements (others probably do too).
+But the following CSS doesn't do anything to the placeholder's value:
+input[placeholder], [placeholder], *[placeholder] {
+    color: red !important;
+}
+<input type=""text"" placeholder=""Value"">
+But Value will still remain grey instead of red.
+Is there a way to change the color of the placeholder text?
+"	2610497	"Yes, it is possible to change the color of the placeholder text in an HTML5 input field using CSS. However, the CSS you provided will not work because the ::placeholder pseudo-element was introduced in CSS3 and is not supported by all browsers.
+
+Here is an example of how you can change the color of the placeholder text in an HTML5 input field using the ::placeholder pseudo-element:
+
+Copy code
+input::placeholder {
+  color: red;
+}
+This will select any input element with a placeholder attribute and change the color of the placeholder text to red.
+
+It's worth noting that some older browsers do not support the ::placeholder pseudo-element, and in this case, you can use JavaScript or a library like jQuery to change the color of the placeholder text.
+
+Alternatively, you can use a CSS pre-processor like SASS or LESS and use a mixin to change the color, or you can use a JavaScript library like animate.css
+
+Also, be aware that some browsers (like Safari, for example) don't support ::placeholder pseudo-element and instead use ::-webkit-input-placeholder."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c6c103f2410f197f0635	00023a1612--63c96b39f603361fcb90d577	00023a1612--63c9c6c103f2410f197f0635	23de65e34db8fd81857e623b153d9415	APPROVED	2023-01-19T22:40:01.660	+	
+"How do I redirect to another webpage?
+How can I redirect the user from one page to another using jQuery or pure JavaScript?
+"	503093	"You can use the window.location object in JavaScript to redirect the user to another webpage. Here's an example of how you might redirect the user to the homepage of a website using JavaScript:
+
+Copy code
+window.location.href = ""https://example.com"";
+You can also use the window.location.replace() method to redirect the user, which replaces the current page in the history stack, so the user can't use the back button to navigate back to the previous page.
+
+Copy code
+window.location.replace(""https://example.com"");
+In jQuery, you can use the $(location).attr('href', 'https://example.com') method to redirect the user:
+
+Copy code
+$(location).attr('href', 'https://example.com');
+You can also use the .prop() method instead of .attr() as it recommended to use .prop() for getting or setting the property of an element.
+
+Copy code
+$(location).prop('href', 'https://example.com');
+Note that using location.href and location.replace() will change the current page and the user will be redirect to the new page, also it will affect the browser's history.
+
+Another way of redirecting using javascript is using the window.location.assign() method, which loads a new document.
+
+Copy code
+window.location.assign(""https://example.com"");
+You can also redirect the user to a specific page after a certain amount of time using the setTimeout() function. Here's an example:
+
+Copy code
+setTimeout(function(){
+    window.location.href = ""https://example.com"";
+}, 3000); 
+This will redirect the user to ""https://example.com"" after 3 seconds (3000 milliseconds)."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c6cd4f4b437c7563f713	00023a1612--63c96b37f603361fcb90d445	00023a1612--63c9c6cd4f4b437c7563f713	2a1461a0c1a0092f7fa2e769aec10171	APPROVED	2023-01-19T22:40:13.966	+	
+"How can I delete a remote tag?
+How can I delete a Git tag that has already been pushed?
+"	5480258	"To delete a remote tag, you can use the following command:
+
+git push --delete <remote_name> <tag_name>
+Alternatively, you can use the following command:
+
+git push <remote_name> :refs/tags/<tag_name>
+Please make sure that you are in the correct branch before running these commands.
+Also, if you are using a version of git older than 2.7, you will have to use git push <remote_name> --delete <tag_name> instead."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c6d22d976807301d2b66	00023a1612--63c96b38f603361fcb90d558	00023a1612--63c9c6d22d976807301d2b66	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:40:18.916	+	
+"Undoing a git rebase
+How do I easily undo a git rebase? A lengthy manual method is:
+checkout the commit parent to both of the branches
+create and checkout a temporary branch
+cherry-pick all commits by hand
+reset the faulty rebased branch to point to the temporary branch
+In my current situation, this works because I can easily spot commits from both branches (one was my stuff, the other was my colleague's stuff). However, my approach strikes me as suboptimal and error-prone (let's say I had just rebased with two of my own branches).
+Clarification: I am talking about a rebase during which multiple commits were replayed, not only one.
+"	134882	"To easily undo a git rebase, you can use the command ""git rebase --abort"". This command will stop the current rebase and return your repository to the state it was in before the rebase command was executed. It can also be used to undo a failed rebase. Be aware that any changes made during the rebase will be discarded.
+
+Alternatively, you can use ""git reset"" to move the branch pointer to the commit before the rebase, effectively undoing the changes made during the rebase. This command can be used in the form ""git reset <commit_hash>"", where <commit_hash> is the hash of the commit before the rebase. This will also discard any changes made during the rebase.
+
+In both cases, it is highly recommended to make sure that you have committed or stash any changes before running this command."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c6f00f3f3063a691239d	00023a1612--63c96b39f603361fcb90d5a5	00023a1612--63c9c6f00f3f3063a691239d	eecfce578ec8f52e1db33743c0b80f7f	APPROVED	2023-01-19T22:40:48.152	+	
+"How do I execute a program or call a system command?
+How do I call an external command within Python as if I had typed it in a shell or command prompt?
+"	89228	"There are several ways to execute a program or call a system command in Python, depending on your needs. Here are a few options:
+
+Using the subprocess module: The subprocess module allows you to spawn new processes, connect to their input/output/error pipes, and obtain their return codes. For example, to run the command ls -l and capture the output, you could use the following code:
+
+import subprocess
+result = subprocess.run([""ls"", ""-l""], capture_output=True, text=True)
+print(result.stdout)
+Using the os module: The os module provides a way to spawn new processes using the os.system() function. For example, to run the command ls -l you could use the following code:
+
+import os
+os.system(""ls -l"")
+Using the os.popen() function: The os.popen() function also allows you to spawn new processes and connect to their input/output/error pipes. For example, to run the command ls -l and capture the output, you could use the following code:
+
+import os
+output = os.popen(""ls -l"").read()
+print(output)
+Note that all the methods above are running the command in synchronously. If you want to run them asynchronously in python you have to use threading or asyncio library."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c6f89ec4b92902989e0c	00023a1612--63c96b37f603361fcb90d4be	00023a1612--63c9c6f89ec4b92902989e0c	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:40:56.625	+	
+"Loop over an array in JavaScript
+How can I loop through all the entries in an array using JavaScript?
+"	9329446	"There are several ways to loop through all the entries in an array using JavaScript:
+
+Using a for loop:
+Copy code
+var arr = [8, 23, 45];
+for (var i = 0; i < arr.length; i++) {
+    console.log(arr[i]);
+}
+This method uses a for loop to iterate over the array, using the length property of the array to determine the number of iterations.
+
+Using the forEach method:
+Copy code
+var arr = [8, 23, 45];
+arr.forEach(function(item) {
+    console.log(item);
+});
+This method uses the forEach method, which is available on arrays in modern browsers. The forEach method accepts a callback function that is called for each item in the array.
+
+Using the for-of loop:
+Copy code
+var arr = [8, 23, 45];
+for (const item of arr) {
+    console.log(item);
+}
+This method uses the for-of loop, a new feature introduced in ECMAScript 6. The for-of loop iterates over the elements of an array, returning the values of the array, not the indexes"				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c7264eb04c786b97c3d1	00023a1612--63c96b37f603361fcb90d4d0	00023a1612--63c9c7264eb04c786b97c3d1	23de65e34db8fd81857e623b153d9415	APPROVED	2023-01-19T22:41:42.065	+	
+"What are the differences between a HashMap and a Hashtable in Java?
+What are the differences between a HashMap and a Hashtable in Java?
+Which is more efficient for non-threaded applications?
+"	40471	"In Java, a HashMap and a Hashtable are both classes that implement the Map interface and provide a hash-table based implementation. However, there are some key differences between the two:
+
+HashMap is non-synchronized, meaning it is not thread-safe. Hashtable is synchronized, meaning it is thread-safe.
+HashMap allows null keys and values, while Hashtable does not allow null keys or values.
+HashMap is generally considered to be more efficient for non-threaded applications because it is non-synchronized. The synchronization in Hashtable can cause a performance hit in non-threaded environments.
+When using a single-threaded application, HashMap is generally the better choice because of its better performance. However, in a multi-threaded environment, Hashtable should be used to ensure that data is not corrupted by multiple threads accessing the same data simultaneously."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c738f603361fcb9ebfe9	00023a1612--63c96b39f603361fcb90d58a	00023a1612--63c9c738f603361fcb9ebfe9	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:42:00.038	+	
+"How do I check out a remote Git branch?
+Somebody pushed a branch called test with git push origin test to a shared repository. I can see the branch with git branch -r. How do I check out the remote test branch? I've tried:
+git checkout test, which does nothing
+git checkout origin/test gives * (no branch)
+"	1783405	"You can check out a remote branch by using the command git checkout -b <local-branch-name> <remote-name>/<remote-branch-name>.
+
+In your case, you can use the command:
+
+git checkout -b test origin/test
+
+This will create a new local branch called ""test"" and track the remote branch ""test"" from ""origin"".
+
+Alternatively, you can also use the command:
+
+git fetch
+
+to get all the branches from remote, and then use the command
+
+git checkout test
+
+to switch to your branch.
+"				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c7474f4b437c756401d9	00023a1612--63c96b36f603361fcb90d43b	00023a1612--63c9c7474f4b437c756401d9	eecfce578ec8f52e1db33743c0b80f7f	APPROVED	2023-01-19T22:42:15.983	+	
+"How do I undo 'git add' before commit?
+I mistakenly added files to Git using the command:
+git add myfile.txt
+I have not yet run git commit. How do I undo this so that these changes will not be included in the commit?
+"	348170	"You can undo the changes made by 'git add' by using the command:
+git reset myfile.txt
+
+This will unstage the file and leave it in the working directory. If you want to undo the changes for multiple files, you can use:
+git reset .
+
+This will unstage all the changes made by 'git add' and leave the files in the working directory.
+
+Alternatively, if you want to undo the changes and also discard any changes made to the file in the working directory, you can use:
+git reset --hard myfile.txt
+
+This will unstage the file and also discard any changes made to the file in the working directory."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c7602d976807301d39d2	00023a1612--63c96b36f603361fcb90d415	00023a1612--63c9c7602d976807301d39d2	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:42:40.052	+	
+"Move the most recent commit(s) to a new branch with Git
+How do I move my recent commits on master to a new branch, and reset master to before those commits were made? e.g. From this:
+master A - B - C - D - E
+To this:
+newbranch     C - D - E
+             /
+master A - B 
+"	1628563	"You can use the command ""git branch newbranch"" to create a new branch.
+Then use ""git reset HEAD3"" to reset master to the commit before the most recent 3 commits (HEAD3 means 3 commits before the current commit, in this case commit A)
+Then use ""git checkout newbranch"" to switch to the new branch and ""git cherry-pick C D E"" to move the commits C, D, and E to the new branch.
+And finally, use ""git push -u origin newbranch"" to push the new branch to the remote repository.
+
+It's always a good idea to make sure you have a backup of your code, or that you are able to revert to a stable commit, before making any changes to your repository."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c77be4ef243596e598f9	00023a1612--63c96b37f603361fcb90d495	00023a1612--63c9c77be4ef243596e598f9	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:43:07.660	+	
+"How do I remove local (untracked) files from the current Git working tree?
+How do I delete untracked local files from the current working tree?
+"	61212	"You can use the git clean command to remove untracked files from the current working tree.
+
+Here's the basic usage of the command:
+
+Copy code
+git clean -f
+The -f or --force option is used to force the removal of files, without the -f option it will only show the files that will be removed but won't remove them.
+
+You can also use the -d or --dir option to remove untracked directories, for example:
+
+Copy code
+git clean -df
+If you want to remove only certain untracked files, you can specify them as arguments, for example:
+
+Copy code
+git clean -f file1.txt file2.txt
+This will remove the file1.txt and file2.txt files from the working tree.
+
+Another option is the -n or --dry-run option, it will show what will be removed but it will not remove any files.
+
+Copy code
+git clean -n
+It's important to note that the git clean command removes files permanently and cannot be undone, so you should be very careful when using it.
+
+If you want to remove all untracked files and directories recursively in all subdirectories, you can use the -x option.
+
+Copy code
+git clean -xf
+You can also use the .gitignore file to ignore files and directories, so they will not be tracked by git, but they won't be removed from your working tree either."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c77d6ab61412b4231520	00023a1612--63c96b36f603361fcb90d442	00023a1612--63c9c77d6ab61412b4231520	2a1461a0c1a0092f7fa2e769aec10171	APPROVED	2023-01-19T22:43:09.046	+	
+"How do I get a timestamp in JavaScript?
+I want a single number that represents the current date and time, like a Unix timestamp.
+"	221294	"You can use the Date.now() function in JavaScript to get the current timestamp in milliseconds since the Unix epoch (January 1, 1970 at 00:00:00 UTC). If you want the timestamp in seconds, you can divide the result by 1000.
+
+// Get timestamp in milliseconds
+let timestampInMilliseconds = Date.now();
+
+// Get timestamp in seconds
+let timestampInSeconds = Math.floor(Date.now() / 1000);
+You can also use the getTime() method of the Date object to get the timestamp in milliseconds.
+
+let date = new Date();
+let timestampInMilliseconds = date.getTime();"				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c7ac6ed7565e0d086d47	00023a1612--63c96b38f603361fcb90d543	00023a1612--63c9c7ac6ed7565e0d086d47	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:43:56.765	+	
+"What is RESTful programming?
+What exactly is RESTful programming?
+"	671118	REST (Representational State Transfer) is an architectural style for building web services. RESTful programming is a way of designing and building web services that conform to the principles of REST. RESTful web services are typically built using HTTP and are based on the principles of resource-based design, in which resources are identified by URIs and manipulated using standard HTTP methods such as GET, POST, PUT, and DELETE.				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c7acf64dab1c8a7caddb	00023a1612--63c96b39f603361fcb90d590	00023a1612--63c9c7acf64dab1c8a7caddb	eecfce578ec8f52e1db33743c0b80f7f	APPROVED	2023-01-19T22:43:56.719	+	
+"What is the most efficient way to deep clone an object in JavaScript?
+What is the most efficient way to clone a JavaScript object? I've seen obj = eval(uneval(o)); being used, but that's non-standard and only supported by Firefox. I've done things like obj = JSON.parse(JSON.stringify(o)); but question the efficiency.  I've also seen recursive copying functions with various flaws.
+I'm surprised no canonical solution exists.
+"	122102	"There are several ways to deep clone an object in JavaScript, and the most efficient method depends on the specific use case and the size of the object being cloned.
+
+One of the most efficient ways to deep clone an object is to use the Object.assign() method in combination with the spread operator (...). This method creates a new object and copies the properties and values of the original object to the new object. Here's an example:
+
+Copy code
+const originalObject = {a: 1, b: 2, c: {d: 3}};
+const clonedObject = {...originalObject};
+Another way is to use the JSON.parse(JSON.stringify(obj)) method, which converts the object to a JSON string, and then parses it back into a new object. This method is relatively fast and works well for small to medium-sized objects. However, it has some limitations. It does not work with functions, undefined, Symbol and some other object properties.
+
+Copy code
+const originalObject = {a: 1, b: 2, c: {d: 3}};
+const clonedObject = JSON.parse(JSON.stringify(originalObject));
+A more complex but more versatile option is the use of a recursive copy function. This method is useful when you need to deep clone an object with a complex structure. You can also add some logic to handle certain types of properties like functions, undefined, Symbol and some other object properties
+
+Copy code
+function deepClone(obj) {
+    if (obj === null || typeof obj !== 'object') {
+        return obj;
+    }
+  
+    let copy;
+    if (Array.isArray(obj)) {
+        copy = [];
+        obj.forEach(item => copy.push(deepClone(item)));
+    } else {
+        copy = {};
+        for (const key in obj) {
+            copy[key] = deepClone(obj[key]);
+        }
+    }
+  
+    return copy;
+}"				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c7b04eb04c786b97d0f4	00023a1612--63c96b38f603361fcb90d4fb	00023a1612--63c9c7b04eb04c786b97d0f4	23de65e34db8fd81857e623b153d9415	APPROVED	2023-01-19T22:44:00.750	+	
+"How do I merge two dictionaries in a single expression?
+I want to merge two dictionaries into a new dictionary.
+x = {'a': 1, 'b': 2}
+y = {'b': 3, 'c': 4}
+z = merge(x, y)
+>>> z
+{'a': 1, 'b': 3, 'c': 4}
+Whenever a key k is present in both dictionaries, only the value y[k] should be kept.
+"	38987	"You can use the update() method to merge two dictionaries in a single expression. The update() method adds the key-value pairs from one dictionary to another, overwriting any existing keys:
+
+x = {'a': 1, 'b': 2}
+y = {'b': 3, 'c': 4}
+x.update(y)
+The resulting dictionary x will be {'a': 1, 'b': 3, 'c': 4}.
+You can also use the ** operator to merge the two dictionary using
+
+x = {'a': 1, 'b': 2}
+y = {'b': 3, 'c': 4}
+z = {**x, **y}
+The resulting dictionary z will be {'a': 1, 'b': 3, 'c': 4}"				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c7d40f3f3063a691380e	00023a1612--63c96b37f603361fcb90d483	00023a1612--63c9c7d40f3f3063a691380e	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:44:36.306	+	
+"How do I push a new local branch to a remote Git repository and track it too?
+How do I:
+Create a local branch from another branch (via git branch or git checkout -b).
+Push the local branch
+to the remote repository (i.e. publish), but make it
+trackable so that git pull and git push will work.
+"	2765421	"Create a new local branch from an existing branch:
+
+Copy code
+git branch new-branch existing-branch
+or
+
+Copy code
+git checkout -b new-branch existing-branch
+Push the local branch to the remote repository:
+
+Copy code
+git push -u origin new-branch
+The -u flag is used to set the new-branch to track the remote branch automatically, so that git pull and git push will work without any further configuration.
+"				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c7e04f4b437c756413eb	00023a1612--63c96b38f603361fcb90d4e4	00023a1612--63c9c7e04f4b437c756413eb	91a96e03d75a8dc188b3c998353a0f2f	APPROVED	2023-01-19T22:44:48.152	+	
+"How do I remove a submodule?
+How do I remove a Git submodule?
+Why can't I do
+git submodule rm module_name?
+"	1260748	"To remove a Git submodule, you can use the following command:
+
+git submodule deinit -f -- module_name
+git rm -f module_name
+
+The first command git submodule deinit deinitializes the submodule, which removes it from the repository's configuration.
+The second command git rm -f removes the submodule from the working tree.
+
+You can't use git submodule rm to remove a submodule because git submodule rm is not a command. The correct command is git submodule deinit and git rm."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c7ed4f4b437c7564151f	00023a1612--63c96b39f603361fcb90d57e	00023a1612--63c9c7ed4f4b437c7564151f	eecfce578ec8f52e1db33743c0b80f7f	APPROVED	2023-01-19T22:45:01.278	+	
+"How do I copy to the clipboard in JavaScript?
+How do I copy text to the clipboard (multi-browser)?
+Related: How does Trello access the user's clipboard?
+"	400212	"There are several ways to copy text to the clipboard in JavaScript, but the method that works best depends on the specific use case and the browser that the user is using. Here are a few options:
+
+Using the document.execCommand('copy') method: This method uses the document.execCommand('copy') method to copy the text to the clipboard. The text to be copied must be selected in the document before calling the method.
+Copy code
+function copyToClipboard(text) {
+    var textArea = document.createElement(""textarea"");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand(""copy"");
+    textArea.remove();
+}
+Using the Clipboard API: The Clipboard API is a more recent and more powerful way to interact with the clipboard. It allows you to read from and write to the clipboard, but it is not supported by all browsers.
+Copy code
+async function copyToClipboard(text) {
+    try {
+        await navigator.clipboard.writeText(text);
+    } catch (err) {
+        console.error('Failed to copy text: ', err);
+    }
+}
+Using the clipboardData object: This method uses the clipboardData object, which is"				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c7fc9ee8ba2186acf902	00023a1612--63c96b39f603361fcb90d56e	00023a1612--63c9c7fc9ee8ba2186acf902	23de65e34db8fd81857e623b153d9415	APPROVED	2023-01-19T22:45:16.976	+	
+"Undo a Git merge that hasn't been pushed yet
+I accidentally ran git merge some_other_branch on my local master branch. I haven't pushed the changes to origin master. How do I undo the merge?
+After merging, git status says:
+# On branch master
+# Your branch is ahead of 'origin/master' by 5 commits.
+How do I undo all these commits?
+"	2389361	"There are a few ways to undo a Git merge that hasn't been pushed yet:
+
+git reset: This command will reset your local master branch to the state of the origin/master branch. You can use the HEAD option to undo the last merge commit.
+Copy code
+git reset --hard origin/master
+git revert: This command will create a new commit that undoes the changes from the merge commit. This is a more ""gentle"" way of undoing the merge, as it keeps the history of the merge in the repository.
+Copy code
+git revert -m 1 <merge commit hash>
+git revert + git push -f: This is similar to the above, but it will also push the revert commit to the remote repository, effectively undoing the merge on the remote as well. Be careful with this option as it will overwrite the remote branch and it might cause conflicts with other users who already pulled the merge commits.
+Copy code
+git revert -m 1 <merge commit hash>
+git push -f origin master
+git branch + git reset + git checkout: This command will create a new branch with the previous state of the master branch, then reset the master branch to the state of the origin/master branch, and then switch to the new branch.
+Copy code
+git branch new_branch
+git reset --hard origin/master
+git checkout new_branch
+git cherry-pick: If you only want to keep some commits from the merge and discard others, you can use the git cherry-pick command.
+Copy code
+git cherry-pick <commit hash 1> <commit hash 2> ...
+Note that in all the above methods, the commits that were part of the merge will be lost and they cannot be recovered. Be sure to double check that you are undoing the correct merge and that you haven't lost any important work."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c801f64dab1c8a7cb46a	00023a1612--63c96b38f603361fcb90d540	00023a1612--63c9c801f64dab1c8a7cb46a	2a1461a0c1a0092f7fa2e769aec10171	APPROVED	2023-01-19T22:45:21.202	+	
+"How do I resolve merge conflicts in a Git repository?
+How do I resolve merge conflicts in my Git repository?
+"	161813	"When merging branches in a Git repository, it's possible that there may be conflicts between the changes made in the different branches. These conflicts will need to be resolved before the merge can be completed. Here are the general steps to resolve merge conflicts in a Git repository:
+
+Start the merge: Use the git merge command to start the merge process. If there are conflicts, Git will indicate which files have conflicts and will not complete the merge.
+
+Open the conflicting files: Open the conflicting files in a text editor to see the specific changes that are causing the conflict. The conflicting changes will be marked with special markers, such as <<<<<<<, |||||||, and >>>>>>>.
+
+Resolve the conflicts: Look at the conflicting changes and decide which changes should be kept and which should be discarded. You can use a visual merge tool to help with this process. Once you have made the necessary changes, save the files.
+
+Commit the resolved conflicts: Once all the conflicts have been resolved, stage the resolved files using git add command, and then commit the changes using git commit.
+
+Continue merging: Repeat the above steps until all conflicts have been resolved and the merge is complete."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c8396ed7565e0d087356	00023a1612--63c96b38f603361fcb90d4f3	00023a1612--63c9c8396ed7565e0d087356	23de65e34db8fd81857e623b153d9415	APPROVED	2023-01-19T22:46:17.157	+	
+"Why does Google prepend while(1); to their JSON responses?
+Why does Google prepend while(1); to their (private) JSON responses?
+For example, here's a response while turning a calendar on and off in Google Calendar:
+while (1);
+[
+  ['u', [
+    ['smsSentFlag', 'false'],
+    ['hideInvitations', 'false'],
+    ['remindOnRespondedEventsOnly', 'true'],
+    ['hideInvitations_remindOnRespondedEventsOnly', 'false_true'],
+    ['Calendar ID stripped for privacy', 'false'],
+    ['smsVerifiedFlag', 'true']
+  ]]
+]
+I would assume this is to prevent people from doing an eval() on it, but all you'd really have to do is replace the while and then you'd be set. I would assume the eval prevention is to make sure people write safe JSON parsing code.
+I've seen this used in a couple of other places, too, but a lot more so with Google (Mail, Calendar, Contacts, etc.) Strangely enough, Google Docs starts with &&&START&&& instead, and Google Contacts seems to start with while(1); &&&START&&&.
+What's going on here?
+"	2669690	"The ""while(1);"" that is prepended to Google's JSON responses is a security measure to protect against a type of attack called ""JSON Hijacking."" This is a technique where an attacker can use the JavaScript function eval() to execute arbitrary code by using a carefully crafted malicious JSON response. By prepending ""while(1);"" to the response, the attacker's script will execute the infinite loop and will not have access to the JSON data. It serves as a way of ensuring that the JSON data can only be accessed by authorized scripts and not by malicious ones that might try to use the data for harmful purposes"				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c85e03f2410f197f1947	00023a1612--63c96b39f603361fcb90d565	00023a1612--63c9c85e03f2410f197f1947	91a96e03d75a8dc188b3c998353a0f2f	APPROVED	2023-01-19T22:46:54.009	+	
+"What is a plain English explanation of ""Big O"" notation?
+I'd prefer as little formal definition as possible and simple mathematics.
+"	487258	"Big O notation is a way to describe the performance of an algorithm or a program. It's a way to measure how well a program can scale as the amount of data it needs to process increases. The ""O"" stands for ""order"" or ""complexity"" and the number that follows it is a way to indicate how quickly the performance of the algorithm or program will degrade as the size of the input data increases.
+
+For example, consider a program that needs to search for an element in an array. If the array is very small, it will take only a few milliseconds for the program to find the element. But if the array is very large, it might take much longer. The Big O notation is used to describe how quickly the program's performance will degrade as the size of the array increases.
+
+There are a few common Big O notations that are used to describe the performance of an algorithm or program:
+
+O(1) means that the program's performance will not degrade at all as the size of the input data increases. This is the best possible performance.
+O(n) means that the program's performance will degrade linearly as the size of the input data increases. This is considered to be good performance.
+O(n^2) means that the program's performance will degrade exponentially as the size of the input data increases. This is considered to be poor performance.
+So, in simple terms, Big O notation is a way to measure how well a program can scale as the amount of data it needs to process increases. It's a way to compare the performance of different algorithms or programs, so you can choose the best one for a given task. O(1) is considered to be best, O(n) is considered to be good, and O(n^2) is considered to be poor.
+
+
+
+"				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c86a2d976807301d5008	00023a1612--63c96b38f603361fcb90d4eb	00023a1612--63c9c86a2d976807301d5008	2a1461a0c1a0092f7fa2e769aec10171	APPROVED	2023-01-19T22:47:06.035	+	
+"What does if __name__ == ""__main__"": do?
+What does this do, and why should one include the if statement?
+if __name__ == ""__main__"":
+    print(""Hello, World!"")
+If you are trying to close a question where someone should be using this idiom and isn't, consider closing as a duplicate of Why is Python running my module when I import it, and how do I stop it? instead. For questions where someone simply hasn't called any functions, or incorrectly expects a function named main to be used as an entry point automatically, use Why doesn't the main() function run when I start a Python script? Where does the script start running?.
+"	419163	"The if __name__ == ""__main__"": block is used to ensure that the code within it will only be executed when the script is run directly, and not when it is imported as a module into another script. When a python script is run, the __name__ variable is set to ""__main__"" so the code block will be executed. If the script is imported as a module into another script, the __name__ variable will be set to the name of the module, and the code block will not be executed. This idiom is used to create reusable libraries without running the main code when imported."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c86c0f3f3063a691469c	00023a1612--63c96b36f603361fcb90d43e	00023a1612--63c9c86c0f3f3063a691469c	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:47:08.833	+	
+"How can I validate an email address in JavaScript?
+I'd like to check if the user input is an email address in JavaScript, before sending it to a server or attempting to send an email to it, to prevent the most basic mistyping. How could I achieve this?
+"	46155	"You can use a regular expression to check if the user input is in the format of an email address. Here is an example of a regular expression that can be used to validate an email address in JavaScript:
+
+var emailRegex = /^(([^<>()\[\]\\.,;:\s@""]+(\.[^<>()\[\]\\.,;:\s@""]+)*)|("".+""))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+if (emailRegex.test(email)) {
+    // email is valid
+} else {
+    // email is invalid
+}
+
+You can use this to check the user input before sending it to the server or attempting to send an email to it.
+
+Please note that this is just a basic validation and it may not cover all possible valid email address cases."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c88bf64dab1c8a7cc162	00023a1612--63c96b37f603361fcb90d4de	00023a1612--63c9c88bf64dab1c8a7cc162	eecfce578ec8f52e1db33743c0b80f7f	APPROVED	2023-01-19T22:47:39.005	+	
+"How do I make Git forget about a file that was tracked, but is now in .gitignore?
+I put a file that was previously being tracked by Git onto the .gitignore list. However, the file still shows up in git status after it is edited. How do I force Git to completely forget the file?
+"	1274057	You can use the command git rm --cached <file> to remove the file from the Git repository while keeping the file on your local file system. This will stop Git from tracking the file and it will no longer show up in git status. If the file is already deleted from the local file system, you can use git add -A to stage the deletion of the file, then git commit to commit the deletion.				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c88df603361fcb9edd28	00023a1612--63c96b37f603361fcb90d455	00023a1612--63c9c88df603361fcb9edd28	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:47:41.874	+	
+"How do I remove a property from a JavaScript object?
+Given an object:
+let myObject = {
+  ""ircEvent"": ""PRIVMSG"",
+  ""method"": ""newURI"",
+  ""regex"": ""^http://.*""
+};
+How do I remove the property regex to end up with the following myObject?
+let myObject = {
+  ""ircEvent"": ""PRIVMSG"",
+  ""method"": ""newURI""
+};
+"	208105	"You can use the delete operator to remove a property from a JavaScript object. In this case, you would use the following code to remove the regex property from the myObject object:
+
+delete myObject.regex;
+This will remove the regex property from the myObject object, leaving you with the desired object.
+
+console.log(myObject) 
+// Output: {ircEvent: ""PRIVMSG"", method: ""newURI""}
+Alternatively, you can use Object.defineProperty() method with the ""configurable"" property set to false to make the property non-configurable
+
+Object.defineProperty(myObject, ""regex"", {
+  configurable: false
+});
+Now you will not able to delete the property."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c8a7f603361fcb9edf85	00023a1612--63c96b37f603361fcb90d477	00023a1612--63c9c8a7f603361fcb9edf85	823c2733aef57d9cc858a636c7965a64	APPROVED	2023-01-19T22:48:07.413	+	
+"Create ArrayList from array
+Given an array of type Element[]:
+Element[] array = {new Element(1), new Element(2), new Element(3)};
+How do I convert this array into an object of type ArrayList<Element>?
+ArrayList<Element> arrayList = ???;
+"	157944	"You can convert an array of type Element[] into an object of type ArrayList<Element> using the Arrays.asList() method or using the new ArrayList<>(Arrays.asList(array)) constructor. Here's an example:
+
+Copy code
+Element[] array = {new Element(1), new Element(2), new Element(3)};
+ArrayList<Element> arrayList = new ArrayList<>(Arrays.asList(array));
+Another way to achieve the same results is to use the constructor of ArrayList and pass the array as a parameter:
+
+Copy code
+Element[] array = {new Element(1), new Element(2), new Element(3)};
+ArrayList<Element> arrayList = new ArrayList<>(Arrays.asList(array));
+It's worth noting that the resulting ArrayList is fixed-size, which means you cannot add or remove elements from it.
+
+If you need a modifiable ArrayList you can use a loop to add all the elements of the array to the ArrayList using the add method.
+
+Copy code
+ArrayList<Element> arrayList = new ArrayList<>();
+for (Element e : array) {
+   arrayList.add(e);
+}
+This way, you can add or remove elements from the ArrayList."				https://toloka.yandex.ru/task/37361170/00023a1612--63c9c8bff603361fcb9ee1cb	00023a1612--63c96b39f603361fcb90d5aa	00023a1612--63c9c8bff603361fcb9ee1cb	2a1461a0c1a0092f7fa2e769aec10171	APPROVED	2023-01-19T22:48:31.984	+	

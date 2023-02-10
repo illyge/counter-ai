@@ -51,7 +51,7 @@ class ComplementNBTransformer(BaseEstimator, TransformerMixin):
         return pd.DataFrame(np.array([x[1] for x in probas]), columns=['nb_probability'])
 
 
-def create_pipeline():
+def create_pipeline(clf):
     nb_pipe = Pipeline([('c_vect', CountVectorizer(min_df=7, ngram_range=(1, 3))),
                         ('nb_proba', ComplementNBTransformer())])
 
@@ -61,4 +61,4 @@ def create_pipeline():
                                   remainder='passthrough')  # the `remainder` part ensures that `selected_features` are passed down the pipeline and later combined with the output of nb_pipe
 
     return Pipeline([('nb_col_trans', col_trans),
-                     ('lr', LogisticRegression(C=10.0, solver='lbfgs', max_iter=500))])
+                     ('clf', clf)])

@@ -1,0 +1,18 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  StreamlitFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: ui.py
+      Runtime: python3.10
+      Environment:
+        Variables:
+          PYTHONUNBUFFERED: 0
+      Events:
+        StreamlitApi:
+          Type: Api
+          Properties:
+            Path: /
+            Method: ANY

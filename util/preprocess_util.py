@@ -17,6 +17,7 @@ def strip_whites(df):
     """
     df.answer = df.answer.str.strip()
 
+
 def remove_duplicates(df):
     """
     Removes duplicate rows based on 'question_id' column from the given DataFrame.
@@ -89,19 +90,43 @@ def add_stealing(df):
     'stealing_frequency' is the ratio of stolen n-grams to unique words in the 'tokenized_answer' column.
     """
 
+    # def find_stolen_ngrams(record):
+    #     print(f"Stealing {record.question_id}")
+    #     ngrams_question = everygrams(record.tokenized_question, min_len=2)
+    #     ngrams_answer = everygrams(record.tokenized_answer, min_len=2)
+    #     ngrams_set = set(ngrams_question).intersection(ngrams_answer)
+    #
+    #     return ngrams_set
+
+    def longest_common(record, q_index, a_index):
+        i = 1
+        t_q = record.tokenized_question
+        t_a = record.tokenized_answer
+        while q_index + i < len(t_q) and a_index + i < len(t_a) and t_q[q_index + i] == t_a[a_index + i]:
+            i += 1
+        return i
+
     def find_stolen_ngrams(record):
-        ngrams_question = everygrams(record.tokenized_question, min_len=2)
-        ngrams_answer = everygrams(record.tokenized_answer, min_len=2)
-        ngrams_set = set(ngrams_question).intersection(ngrams_answer)
+        n_ngrams = 0
+        max_len = 0
+        for q_index, q_token in enumerate(record.tokenized_question):
+            common_grams = [longest_common(record, q_index, a_index) for a_index, a_token in enumerate(record.tokenized_answer)
+                            if a_token == q_token]
+            n_ngrams += sum([gram-1 for gram in common_grams])  # interested only in >=2grams, hence gram-1
+            if len(common_grams) > 0:
+                max_len = max([max_len] + [max(common_grams)])
+        return (n_ngrams, max_len)
 
-        return ngrams_set
-
-    df['stolen_ngrams'] = df.apply(find_stolen_ngrams, axis=1)
+    df['stolen_pairs'] = df.apply(find_stolen_ngrams, axis=1)
     df['stealing_strength'] = np.log1p(
-        df.stolen_ngrams.apply(lambda x: max([len(ngram) for ngram in x]) if len(x) > 0 else 0))
+        df.stolen_pairs.apply(lambda x: x[1]))
+    # df['stealing_strength'] = df.stolen_pairs.apply(lambda x: x[1])
     df['stealing_frequency'] = np.log1p(
-        df.apply(lambda x: len(x.stolen_ngrams) / x.n_unique_words if x.n_unique_words > 0 else 0, axis=1))
-    df.drop('stolen_ngrams', axis=1, inplace=True)
+        df.apply(lambda x: x.stolen_pairs[0] / x.n_unique_words if x.n_unique_words > 0 else 0, axis=1))
+
+    # df['stealing_frequency'] = df.apply(lambda x: x.stolen_pairs[0] / x.n_unique_words if x.n_unique_words > 0 else 0, axis=1)
+
+    df.drop('stolen_pairs', axis=1, inplace=True)
 
 
 def add_answer_length(df):
