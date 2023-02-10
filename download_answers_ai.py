@@ -1,5 +1,4 @@
 import jsonlines
-import time
 from util.openai_util import fetch_answer
 
 questions_filename = "1673895202.jsonl"

@@ -101,16 +101,9 @@ Main steps:
 #### Results
 
 ![features_input.png](xgb_features_input.png)
-* The main increase in score comes from `answer_length` and `creativity`
-* Despite the results of correlation matrix and histograms, `sentence_length_std` and `sentence_length_std` didn't show any use
-* The following features were selected after trying cross-validation score:
-  * `creativity`
-  * `vocabulary_size` 
-  * `stealing_strength`
-  * `answer_length`
-  * `sentence_length_mean`
+* All features, except for `vocabulary_size` significantly add to the performance
 * After fine-tuning, the best F1 score on the test data was:
-  * 0.829
+  * 0.85
   * Winning classifier: XGBoost
 
 ### Distribution-based Approach
@@ -123,11 +116,11 @@ Main steps of this approach are:
 #### Results
 * The best `ngram_range` is (1, 4). That means that up to 4-words sequences have significance for the word frequency analysis
 * The F1 score on the test data was:
-  * 0.911
+  * 0.93
 
 
 ### Combined approach
-Both previous approached showed already good scores (0.829 and 0.911)
+Both previous approached showed already good scores (0.85 and 0.93)
 However they are dealing with different aspects of data, so it was worth trying to combine them into 2-layered pipeline
 
 Main steps:
@@ -138,12 +131,12 @@ Main steps:
 
 #### Results
 * The F1 score on the test data was:
-  * 0.935
+  * 0.95
 * It's a great improvement over both approaches, so this 2-layered pipeline will go into production
 
-|    |         Feature based, <br/>Logistic Regression |         Feature based,<br/> XGBoost |   Feature based, <br/>Random Forest |       Distribution based,<br/>Naive Bayes |         Combined pipeline,<br/>XBGBoost + Naive Bayes |
-|---:|-------------------------------------------:|-------------------------------:|------------------------------------:|------------------------------------------:|------------------------------------------------------:|
-|  0 |                                      0.772 |                          0.829 |                               0.823 |                                     0.911 |                                                 0.935 |
+|    |   ('Feature based', 'Logistic Regression') |   ('Feature based', 'XGBoost') |   ('Feature based', 'Random Forest') |   ('Distribution based', 'Naive Bayes') |   ('Combined pipeline', 'XBGBoost + Naive Bayes') |
+|---:|-------------------------------------------:|-------------------------------:|-------------------------------------:|----------------------------------------:|--------------------------------------------------:|
+|  0 |                                       0.81 |                           0.85 |                                 0.84 |                                    0.93 |                                              0.95 |
 
 ## Deployment
 
