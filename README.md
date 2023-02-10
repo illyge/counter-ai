@@ -100,7 +100,7 @@ Main steps:
 
 #### Results
 
-![features_input.png](xgb_features_input.png)
+![features_input.png](xgb_features_input_1.png)
 * All features, except for `vocabulary_size` significantly add to the performance
 * After fine-tuning, the best F1 score on the test data was:
   * 0.85
