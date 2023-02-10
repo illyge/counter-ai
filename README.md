@@ -101,14 +101,7 @@ Main steps:
 #### Results
 
 ![features_input.png](xgb_features_input.png)
-* The main increase in score comes from `answer_length` and `creativity`
-* Despite the results of correlation matrix and histograms, `sentence_length_std` and `sentence_length_std` didn't show any use
-* The following features were selected after trying cross-validation score:
-  * `creativity`
-  * `vocabulary_size` 
-  * `stealing_strength`
-  * `answer_length`
-  * `sentence_length_mean`
+* All features significantly add to the performance
 * After fine-tuning, the best F1 score on the test data was:
   * 0.829
   * Winning classifier: XGBoost
