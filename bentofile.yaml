@@ -12,3 +12,4 @@ python:
     - pydantic
     - scipy
     - nltk
+    - xgboost

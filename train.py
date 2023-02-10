@@ -26,7 +26,10 @@ def forest_pipeline():
 
 def xgb_pipeline():
     pipe = create_pipeline(XGBClassifier())
-    pipe.set_params(**{'clf__learning_rate': 0.3, 'clf__max_depth': 5, 'clf__min_child_weight': 3, 'clf__n_estimators': 85})
+    pipe.set_params(**{
+        'nb_col_trans__nb_pipe__c_vect__min_df': 7,
+        'nb_col_trans__nb_pipe__c_vect__ngram_range': (1, 4),
+        'clf__learning_rate': 0.1, 'clf__max_depth': 4, 'clf__min_child_weight': 1, 'clf__n_estimators': 100})
     return pipe
 
 def train():
@@ -42,7 +45,7 @@ def train():
     X_test = df_test[['stemmed_answer'] + selected_features]
     y_test = df_test.target
 
-    classifier = forest_pipeline()
+    classifier = xgb_pipeline()
     classifier.fit(X_train, y_train)
 
     print(f"Score: {f1_score(classifier.predict(X_test), y_test)}")

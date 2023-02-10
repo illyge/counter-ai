@@ -1,8 +1,6 @@
 import requests
 import time
 from util.stack_overflow_timeouts import answers_timeouts
-from stackapi import StackAPI
-
 
 def fetch_questions(page, pagesize):
     url = "https://api.stackexchange.com/2.2/questions"
@@ -12,7 +10,7 @@ def fetch_questions(page, pagesize):
         "pagesize": pagesize,  # Number of questions per page
         "answers": 1,
         "filter": "!*MQIL7pRpsdq5H)nUUCB(_njhjqb",
-        "key": "gJE1zbvB18v8sS7Opl43lg((",
+        "key": "",
         "page": page
     }
 
@@ -92,16 +90,3 @@ def fetch_all_answers(question_id):
         raise Exception(f"Request errored with status {response.status_code}. {response.json()}")
 
     return response.json()["items"]
-
-
-
-    site = StackAPI('stackoverflow')
-    site.key = "gJE1zbvB18v8sS7Opl43lg(("
-    site.page_size = 3
-    site.max_pages = 1
-    answers = site.fetch(f"questions/{question_id}/answers",
-                         sort="creation",
-                         filter="!*sVmCjZbt5MPsJxAfYAZLOjFCfva",
-                         pagesize=3
-                         )
-    return answers['items']

@@ -28,9 +28,8 @@ Classify an answer to a StackOverflow question as an output from GPT AI or not
 
 **Response**
 {
-  "ai_generated": [
-    false
-  ]
+  "ai_generated": false,
+  "ai_probability": 0.24967914819717407
 }
 
 **Request**
@@ -42,9 +41,8 @@ Classify an answer to a StackOverflow question as an output from GPT AI or not
 
 **Response**
 {
-  "ai_generated": [
-    true
-  ]
+  "ai_generated": true,
+  "ai_probability": 0.9099894165992737
 }
 
 """
