@@ -100,7 +100,7 @@ Main steps:
 
 #### Results
 
-![features_input.png](features_input.png)
+![features_input.png](xgb_features_input.png)
 * The main increase in score comes from `answer_length` and `creativity`
 * Despite the results of correlation matrix and histograms, `sentence_length_std` and `sentence_length_std` didn't show any use
 * The following features were selected after trying cross-validation score:
